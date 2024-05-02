@@ -18,9 +18,9 @@ public class GatewayApplication {
         logger.info("启动成功");
         logger.info("端口号：{}",run.getEnvironment().getProperty("server.port"));
         //打印Ip+端口号
-        logger.info("网关地址：http://127.0.0.1:{}{}",
-                run.getEnvironment().getProperty("server.port"),
-                run.getEnvironment().getProperty("server.servlet.context-path"));
+        logger.info("网关地址：http://127.0.0.1:{}",
+                run.getEnvironment().getProperty("server.port")
+                );
     }
 
 }

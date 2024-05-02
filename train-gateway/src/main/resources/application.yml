@@ -1,2 +1,13 @@
 server:
   port: 8000
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: member
+          # uri: lb://user-service # 转发的目标服务地址，这里使用负载均衡器lb前缀
+          uri: http://localhost:8080
+          predicates:
+            - Path=/member/** # 路径谓词，匹配/users开头的请求
+#          filters:
+#            - RewritePath=/users/(?<segment>.*)/, /$\{segment} # 重写路径，去除/users前缀

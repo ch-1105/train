@@ -18,8 +18,9 @@ public class MemberApplication {
         logger.info("启动成功");
         logger.info("端口号：{}",run.getEnvironment().getProperty("server.port"));
         //打印Ip+端口号
-        logger.info("Ip地址：http://127.0.0.1:{}",
-                run.getEnvironment().getProperty("server.port"));
+        logger.info("Ip地址：http://127.0.0.1:{}{}",
+                run.getEnvironment().getProperty("server.port"),
+                run.getEnvironment().getProperty("server.servlet.context-path"));
     }
 
 }
