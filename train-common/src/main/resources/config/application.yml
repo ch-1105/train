@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/train?useSSL=false?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: train
+    password: train
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mybatis:
+    configuration:
+      map-underscore-to-camel-case: true # 可选项，开启下划线转驼峰命名规则
+#    type-aliases-package: com.example.yourpackage.entity # 实体类所在的包路径
