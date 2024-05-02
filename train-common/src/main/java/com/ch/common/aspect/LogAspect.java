@@ -1,10 +1,6 @@
-package com.ch.member.aspect;
+package com.ch.common.aspect;
 
-/**
- * author: ch
- * create: 2024--2416:09
- * Description:
- */
+
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
@@ -29,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class LogAspect {
     public LogAspect() {
-        System.out.println("Common LogAspect");
+        System.out.println("Common LogAspect test ");
     }
     private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
 
@@ -94,5 +90,8 @@ public class LogAspect {
         return result;
     }
 
+    public static void main(String[] args) {
+        System.out.println(1);
+    }
 }
 
