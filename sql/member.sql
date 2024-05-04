@@ -1,9 +1,8 @@
--- member.`member`
--- create table if not exists train.`member`
--- (
---     `username` varchar(256) not null comment '用户名',
---     `id` bigint not null auto_increment comment 'id' primary key
---     ) comment 'member.`member`';
+create table if not exists train.`member`
+(
+    `username` varchar(256) not null comment '用户名',
+    `id` bigint not null auto_increment comment 'id' primary key
+    ) comment 'member.`member`';
 
 
 insert into train.`member` (`username`) values ('熊越彬');
