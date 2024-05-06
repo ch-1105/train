@@ -2,6 +2,7 @@ package com.ch.member.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.ch.common.result.Result;
+import com.ch.common.utils.GlobalException;
 import com.ch.member.request.MemberRequest;
 import com.ch.member.service.MemberService;
 import jakarta.annotation.Resource;
@@ -28,7 +29,7 @@ public class MemberController {
     @PostMapping("/register")
     public Result<Long> registerMember(MemberRequest member){
         if (StrUtil.isBlank(member.getMobile())) {
-            throw new RuntimeException("手机号不能为空");
+            throw new GlobalException("手机号不能为空");
         }
         return Result.success(memberService.registerMember(member));
     }
