@@ -1,11 +1,10 @@
 package com.ch.member.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.ch.common.result.Result;
-import com.ch.common.utils.GlobalException;
 import com.ch.member.request.MemberRequest;
 import com.ch.member.service.MemberService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,10 +26,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public Result<Long> registerMember(MemberRequest member){
-        if (StrUtil.isBlank(member.getMobile())) {
-            throw new GlobalException("手机号不能为空");
-        }
+    public Result<Long> registerMember(@Valid MemberRequest member){
         return Result.success(memberService.registerMember(member));
     }
 }

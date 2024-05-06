@@ -39,6 +39,7 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
+                //这里打印出校验不通过的字段和错误信息
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         Result<String> result = new Result<>(400, errorMessage, null);
