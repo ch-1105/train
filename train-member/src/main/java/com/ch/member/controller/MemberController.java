@@ -1,6 +1,8 @@
 package com.ch.member.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.ch.common.result.Result;
+import com.ch.member.request.MemberRequest;
 import com.ch.member.service.MemberService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +26,10 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public Long registerMember(String mobile){
-        if (StrUtil.isBlank(mobile)) {
+    public Result<Long> registerMember(MemberRequest member){
+        if (StrUtil.isBlank(member.getMobile())) {
             throw new RuntimeException("手机号不能为空");
         }
-        return memberService.registerMember(mobile);
+        return Result.success(memberService.registerMember(member));
     }
 }
