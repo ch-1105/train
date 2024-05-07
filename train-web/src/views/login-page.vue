@@ -54,7 +54,7 @@ const onFinishFailed = errorInfo => {
 };
 </script>
 <style>
-.h1{
+.login-main h1{
   font-size: 25px;
   font-weight: bold;
 }
