@@ -23,6 +23,10 @@ public class Result<T> {
         return new Result<>(200, "操作成功", data);
     }
 
+    public static <T> Result<T> success() {
+        return new Result<>(200, "操作成功", null);
+    }
+
     // 失败静态方法
     public static <T> Result<T> fail(Integer code, String message) {
         return new Result<>(code, message, null);

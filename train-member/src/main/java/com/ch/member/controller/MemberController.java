@@ -29,4 +29,10 @@ public class MemberController {
     public Result<Long> registerMember(@Valid MemberRequest member){
         return Result.success(memberService.registerMember(member));
     }
+
+    @PostMapping("/sendCode")
+    public Result<Object> sendCode(@Valid MemberRequest member){
+        memberService.sendCode(member);
+        return Result.success();
+    }
 }
