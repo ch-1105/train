@@ -12,3 +12,9 @@ POST http://localhost:8080/member/sendCode
 Content-Type: application/x-www-form-urlencoded
 
 mobile = 11100000000
+
+### 登录
+POST http://localhost:8080/member/login
+Content-Type: application/x-www-form-urlencoded
+
+mobile = 11100000000 & code = 8888
