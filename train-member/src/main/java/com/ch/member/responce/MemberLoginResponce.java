@@ -14,4 +14,6 @@ public class MemberLoginResponce implements Serializable {
     public String id;
 
     public String mobile;
+
+    public String token;
 }

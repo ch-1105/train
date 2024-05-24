@@ -14,7 +14,7 @@ import ComponentHeader from "@/components/component-header.vue";
 import ComponentSider from "@/components/component-silder.vue";
 
 export default defineComponent({
-  name: "login-view",
+  name: "main-page",
   components: {ComponentSider, ComponentHeader},
   setup() {
     return {
@@ -23,5 +23,4 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-
 </style>

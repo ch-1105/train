@@ -80,7 +80,8 @@ export default defineComponent({
           notification.success({ description: '登录成功！' });
           // 登录成功，跳到控台主页
           router.push("/welcome");
-          store.commit("setMember", data.content);
+          store.commit("setMember", data.data);
+          console.log("data content"+data.data)
         } else {
           notification.error({ description: data.message });
         }
