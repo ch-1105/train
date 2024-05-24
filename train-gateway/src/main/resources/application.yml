@@ -11,3 +11,16 @@ spring:
             - Path=/member/** # 路径谓词，匹配/users开头的请求
 #          filters:
 #            - RewritePath=/users/(?<segment>.*)/, /$\{segment} # 重写路径，去除/users前缀
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            # 允许请求来源（老版本叫allowedOrigin）
+            allowedOriginPatterns: '*'
+            # 允许携带的头信息
+            allowedHeaders: '*'
+            # 允许的请求方式
+            allowedMethods: '*'
+            # 是否允许携带cookie
+            allowCredentials: true
+            # 跨域检测的有效期，会发起一个OPTION请求
+            maxAge: 3600

@@ -7,10 +7,7 @@ import com.ch.member.responce.MemberLoginResponce;
 import com.ch.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * author: ch
@@ -28,18 +25,18 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public Result<Long> registerMember(@Valid MemberRequest member){
+    public Result<Long> registerMember(@Valid @RequestBody MemberRequest member){
         return Result.success(memberService.registerMember(member));
     }
 
     @PostMapping("/sendCode")
-    public Result<Object> sendCode(@Valid MemberRequest member){
+    public Result<Object> sendCode(@Valid @RequestBody MemberRequest member){
         memberService.sendCode(member);
         return Result.success();
     }
 
     @PostMapping("/login")
-    public Result<MemberLoginResponce> login(@Valid MemberLoginRequest member){
+    public Result<MemberLoginResponce> login(@Valid @RequestBody MemberLoginRequest member){
         return Result.success(memberService.login(member));
     }
 }
