@@ -21,7 +21,6 @@
       <a-menu-item key="2">nav 2</a-menu-item>
       <a-menu-item key="3">nav 3</a-menu-item>
     </a-menu>
-    <div>{{member.mobile}}</div>
   </a-layout-header>
 
 </template>

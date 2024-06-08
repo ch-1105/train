@@ -20,11 +20,12 @@ public class MemberController {
     @Resource
     private MemberService memberService;
     @GetMapping("/test")
-    public String test(){
-        return "test";
+    public Result<String> test(){
+        return Result.success("test");
     }
 
     @PostMapping("/register")
+    
     public Result<Long> registerMember(@Valid @RequestBody MemberRequest member){
         return Result.success(memberService.registerMember(member));
     }
