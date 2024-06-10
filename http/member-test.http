@@ -31,7 +31,7 @@ Content-Type: application/json
 > {%
     client.log(JSON.stringify(response.body));
     client.log(JSON.stringify(response.body.data.token));
-    client.global.set("token", JSON.stringify(response.body.data.token));
+    client.global.set("token", response.body.data.token);
 %}
 
 ### 新建乘客
