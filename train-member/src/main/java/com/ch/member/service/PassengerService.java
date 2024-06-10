@@ -3,6 +3,7 @@ package com.ch.member.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ch.member.domain.Passenger;
+import com.ch.member.request.PassengerSaveRequest;
 
 /**
 * @author ch051
@@ -11,4 +12,5 @@ import com.ch.member.domain.Passenger;
 */
 public interface PassengerService extends IService<Passenger> {
 
+    void savePassenger(PassengerSaveRequest passenger);
 }

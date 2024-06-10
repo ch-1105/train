@@ -25,3 +25,14 @@ Content-Type: application/json
   "mobile": "11100000000",
   "code": "8888"
 }
+
+### 新建乘客
+POST http://localhost:8080/member/passenger/save
+Content-Type: application/json
+
+{
+  "memberId": 1,
+  "name": "11100000000",
+  "idCard": "8888",
+  "type": 1
+}

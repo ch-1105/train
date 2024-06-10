@@ -1,8 +1,7 @@
-package com.ch.member.domain;
+package com.ch.member.request;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,33 +11,33 @@ import java.util.Date;
  * 乘车人
  * @TableName passenger
  */
-@TableName(value ="passenger")
 @Data
-public class Passenger implements Serializable {
-    /**
-     * id
-     */
-    @TableId
+public class PassengerSaveRequest implements Serializable {
+
     private Long id;
 
     /**
      * 会员id
      */
+    @NotNull(message ="【会员id】不能为空")
     private Long memberId;
 
     /**
      * 姓名
      */
+    @NotBlank(message ="【姓名】不能为空")
     private String name;
 
     /**
      * 身份证
      */
+    @NotBlank(message ="【身份证】不能为空")
     private String idCard;
 
     /**
      * 旅客类型|枚举[PassengerTypeEnum]
      */
+    @NotBlank(message ="【旅客类型】不能为空")
     private String type;
 
     /**
@@ -50,7 +49,4 @@ public class Passenger implements Serializable {
      * 修改时间
      */
     private Date updateTime;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }
