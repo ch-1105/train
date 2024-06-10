@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ch.common.context.LoginMemberContext;
 import com.ch.member.domain.Passenger;
 import com.ch.member.mapper.PassengerMapper;
 import com.ch.member.request.PassengerSaveRequest;
@@ -27,6 +28,7 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
         DateTime now = DateTime.now();
         Passenger savePassenger = BeanUtil.copyProperties(passenger,
                 Passenger.class);
+        savePassenger.setMemberId(Long.valueOf(LoginMemberContext.getId()));
         savePassenger.setId(IdUtil.getSnowflakeNextId());
         savePassenger.setCreateTime(now);
         savePassenger.setUpdateTime(now);

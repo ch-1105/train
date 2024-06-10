@@ -40,7 +40,6 @@ Content-Type: application/json
 token: {{token}}
 
 {
-  "memberId": "999",
   "name": "11100000000",
   "idCard": "8888",
   "type": 1

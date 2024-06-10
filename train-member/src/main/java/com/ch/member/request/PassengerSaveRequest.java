@@ -1,7 +1,6 @@
 package com.ch.member.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,7 +18,6 @@ public class PassengerSaveRequest implements Serializable {
     /**
      * 会员id
      */
-    @NotNull(message ="【会员id】不能为空")
     private Long memberId;
 
     /**
