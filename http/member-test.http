@@ -17,7 +17,9 @@ Content-Type: application/json
   "mobile": "11100000000"
 }
 
-### 登录
+
+
+### 登录 获取token
 POST http://localhost:8000/member/login
 Content-Type: application/json
 
@@ -26,12 +28,19 @@ Content-Type: application/json
   "code": "8888"
 }
 
+> {%
+    client.log(JSON.stringify(response.body));
+    client.log(JSON.stringify(response.body.data.token));
+    client.global.set("token", JSON.stringify(response.body.data.token));
+%}
+
 ### 新建乘客
-POST http://localhost:8080/member/passenger/save
+POST http://localhost:8000/member/passenger/save
 Content-Type: application/json
+token: {{token}}
 
 {
-  "memberId": 1,
+  "memberId": "999",
   "name": "11100000000",
   "idCard": "8888",
   "type": 1

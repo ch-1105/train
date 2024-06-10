@@ -30,7 +30,7 @@ public class JwtUtil {
         log.info("开始生成JWT token，id：{}，mobile：{}", id, mobile);
         GlobalBouncyCastleProvider.setUseBouncyCastle(false);
         DateTime now = DateTime.now();
-        DateTime expTime = now.offsetNew(DateField.HOUR, 24);
+        DateTime expTime = now.offsetNew(DateField.DAY_OF_MONTH, 31);
         Map<String, Object> payload = new HashMap<>();
         // 签发时间
         payload.put(JWTPayload.ISSUED_AT, now);
@@ -70,7 +70,8 @@ public class JwtUtil {
     public static void main(String[] args) {
         createToken(1L, "123");
 
-        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MTY1NjM3MjAsIm1vYmlsZSI6IjExMTAwMDAwMDAwIiwiaWQiOjE3OTM2NDA5NTIxMzMzNDUyODAsImV4cCI6MTcxNjY1MDEyMCwiaWF0IjoxNzE2NTYzNzIwfQ.Ft3dfFxyVKFwsvAe-73b5E5-MC4tNphldvFkm_RPc0c";
+        String token =
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MTgwMDM3MjMsIm1vYmlsZSI6IjExMTAwMDAwMDAwIiwiaWQiOjE3OTM2NDA5NTIxMzMzNDUyODAsImV4cCI6MTcyMDY4MjEyMywiaWF0IjoxNzE4MDAzNzIzfQ.qproUmQtSBQPV32OkgTovRUOawapsz3D58wiuxgErM0";
         validate(token);
 
         getJSONObject(token);
