@@ -40,7 +40,15 @@ Content-Type: application/json
 token: {{token}}
 
 {
-  "name": "11100000000",
+  "name": "11100000002",
   "idCard": "8888",
-  "type": 1
+  "type": 2
+}
+
+### 获取乘客列表
+GET http://localhost:8000/member/passenger/getList
+Content-Type: application/json
+token: {{token}}
+
+{
 }
