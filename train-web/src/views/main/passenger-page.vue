@@ -29,6 +29,8 @@
 
 
 import {defineComponent, reactive, ref} from "vue";
+import axios from "axios";
+import {notification} from "ant-design-vue";
 
 export default defineComponent({
   name: "passenger-view",
@@ -37,11 +39,6 @@ export default defineComponent({
     const showModal = () => {
       open.value = true;
     };
-    const handleOk = e => {
-      console.log(e);
-      open.value = false;
-    };
-
     const passenger = reactive({
       id: undefined,
       name: undefined,
@@ -51,6 +48,19 @@ export default defineComponent({
       createTime: undefined,
       updateTime: undefined,
     });
+    const handleOk = () => {
+      axios.post("/member/passenger/save", passenger,).then(response => {
+        let data = response.data;
+        if (data.code === 200) {
+          notification.success({ description: '添加成功！' });
+          open.value = false;
+        } else {
+          notification.error({ description: data.message });
+        }
+      });
+    };
+
+
     const labelCol = {
       style: {
         width: '150px',
