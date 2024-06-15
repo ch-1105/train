@@ -3,7 +3,6 @@ package com.ch.member.controller;
 import com.ch.common.context.LoginMemberContext;
 import com.ch.common.resp.PageResponse;
 import com.ch.common.result.Result;
-import com.ch.member.request.PassengerDeleteRequest;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
 import com.ch.member.responce.PassengerQueryResponse;
@@ -37,9 +36,9 @@ public class PassengerController {
         return Result.success(passengerList);
     }
 
-    @PostMapping("/delete")
-    public Result<Object> deletePassenger(@RequestBody @Valid PassengerDeleteRequest req){
-        passengerService.deletePassenger(req);
+    @DeleteMapping("/delete/{id}")
+    public Result<Object> deletePassenger(@PathVariable Long id){
+        passengerService.deletePassenger(id);
         return Result.success();
     }
 }

@@ -4,7 +4,6 @@ package com.ch.member.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ch.common.resp.PageResponse;
 import com.ch.member.domain.Passenger;
-import com.ch.member.request.PassengerDeleteRequest;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
 import com.ch.member.responce.PassengerQueryResponse;
@@ -20,5 +19,5 @@ public interface PassengerService extends IService<Passenger> {
 
     PageResponse<PassengerQueryResponse> getPassengerList(PassengerQueryRequest passenger);
 
-    void deletePassenger(PassengerDeleteRequest req);
+    void deletePassenger(Long id);
 }

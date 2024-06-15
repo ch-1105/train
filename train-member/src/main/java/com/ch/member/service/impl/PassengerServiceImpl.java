@@ -10,7 +10,6 @@ import com.ch.common.context.LoginMemberContext;
 import com.ch.common.resp.PageResponse;
 import com.ch.member.domain.Passenger;
 import com.ch.member.mapper.PassengerMapper;
-import com.ch.member.request.PassengerDeleteRequest;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
 import com.ch.member.responce.PassengerQueryResponse;
@@ -86,8 +85,8 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
 
 
     @Override
-    public void deletePassenger(PassengerDeleteRequest req) {
-        passengerMapper.deleteById(req.getId());
+    public void deletePassenger(Long id) {
+        passengerMapper.deleteById(id);
     }
 }
 

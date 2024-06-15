@@ -21,12 +21,12 @@
             <a-space>
               <a @click="onEdit(record)">编辑</a>
               <a-popconfirm
-                  title="确认删除?"
+                  title="删除后不可恢复，确认删除?"
                   @confirm="handleDelete(record)"
                   ok-text="确认"
                   cancel-text="取消"
               >
-                <a>删除</a>
+                <a style="color: red">删除</a>
               </a-popconfirm>
             </a-space>
          </template>
@@ -181,10 +181,7 @@ export default defineComponent({
     };
 
     const handleDelete = (record) => {
-      axios.get("/member/passenger/delete",{
-        params:{
-          id: record.id,
-        }}).then(response => {
+      axios.delete("/member/passenger/delete/"+record.id,).then(response => {
           let data = response.data;
           if (data.code === 200){
             notification.success({ description: '删除成功！' });
