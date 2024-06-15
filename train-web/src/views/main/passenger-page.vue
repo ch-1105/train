@@ -2,25 +2,31 @@
   <h1>passenger</h1>
 
     <div>
+      <!--添加p标签与下面表格拉开空隙-->
+      <p>
       <a-button type="primary" @click="showModal">Open Modal</a-button>
-      <a-modal v-model:open="open" title="Basic Modal" @ok="handleOk">
-          <a-form :model="passenger" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="姓名">
-              <a-input v-model:value="passenger.name" />
-            </a-form-item>
-            <a-form-item label="身份证">
-              <a-input v-model:value="passenger.idCard" />
-            </a-form-item>
-            <a-form-item label="类型">
-              <a-select v-model:value="passenger.type">
-                <a-select-option value="1" >成人</a-select-option>
-                <a-select-option value="1" >儿童</a-select-option>
-                <a-select-option value="1" >学生</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-form>
+      </p>
+      <a-table :dataSource="dataSource" :columns="columns" />
 
-      </a-modal>
+        <a-modal v-model:open="open" title="Basic Modal" @ok="handleOk">
+            <a-form :model="passenger" :label-col="labelCol" :wrapper-col="wrapperCol">
+              <a-form-item label="姓名">
+                <a-input v-model:value="passenger.name" />
+              </a-form-item>
+              <a-form-item label="身份证">
+                <a-input v-model:value="passenger.idCard" />
+              </a-form-item>
+              <a-form-item label="类型">
+                <a-select v-model:value="passenger.type">
+                  <a-select-option value="1" >成人</a-select-option>
+                  <a-select-option value="1" >儿童</a-select-option>
+                  <a-select-option value="1" >学生</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-form>
+        </a-modal>
+
+
     </div>
 
 </template>
@@ -76,6 +82,39 @@ export default defineComponent({
       passenger,
       labelCol,
       wrapperCol,
+
+      dataSource: [
+        {
+          key: '1',
+          name: '胡彦斌',
+          age: 32,
+          address: '西湖区湖底公园1号',
+        },
+        {
+          key: '2',
+          name: '胡彦祖',
+          age: 42,
+          address: '西湖区湖底公园1号',
+        },
+      ],
+
+      columns: [
+        {
+          title: '姓名',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: '年龄',
+          dataIndex: 'age',
+          key: 'age',
+        },
+        {
+          title: '住址',
+          dataIndex: 'address',
+          key: 'address',
+        },
+      ],
     };
 
   },
