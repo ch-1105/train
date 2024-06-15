@@ -4,7 +4,10 @@
     <div>
       <!--添加p标签与下面表格拉开空隙-->
       <p>
-      <a-button type="primary" @click="showModal">Open Modal</a-button>
+        <a-space>
+          <a-button type="primary" @click="queryList()">刷新</a-button>
+          <a-button type="primary" @click="showModal">新增</a-button>
+        </a-space>
       </p>
       <a-table :dataSource="passengerList" :columns="columns" :pagination="pagination" @change="handleTableChange"/>
 
@@ -97,6 +100,13 @@ export default defineComponent({
     };
 
     const queryList = (param) => {
+      if (param === undefined|| param === null){
+        param = {
+          page: 1,
+          size: pagination.pageSize,
+        }
+      }
+
       console.log("queryList -> 查看当前分页查询参数：",param)
 
       axios.get("/member/passenger/getList",{
@@ -152,6 +162,7 @@ export default defineComponent({
       columns,
       pagination,
       handleTableChange,
+      queryList
     };
 
   },
