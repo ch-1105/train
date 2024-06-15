@@ -40,11 +40,17 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
         DateTime now = DateTime.now();
         Passenger savePassenger = BeanUtil.copyProperties(passenger,
                 Passenger.class);
-        savePassenger.setMemberId(Long.valueOf(LoginMemberContext.getId()));
-        savePassenger.setId(IdUtil.getSnowflakeNextId());
-        savePassenger.setCreateTime(now);
-        savePassenger.setUpdateTime(now);
-        passengerMapper.insert(savePassenger);
+        //根据传入passenger确定时新增还是更新
+        if (ObjectUtil.isNull(passenger.getId())) {
+            savePassenger.setMemberId(Long.valueOf(LoginMemberContext.getId()));
+            savePassenger.setId(IdUtil.getSnowflakeNextId());
+            savePassenger.setCreateTime(now);
+            savePassenger.setUpdateTime(now);
+            passengerMapper.insert(savePassenger);
+        }else{
+            savePassenger.setUpdateTime(now);
+            passengerMapper.updateById(savePassenger);
+        }
     }
 
     @Override
