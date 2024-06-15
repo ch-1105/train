@@ -6,7 +6,7 @@
       <p>
       <a-button type="primary" @click="showModal">Open Modal</a-button>
       </p>
-      <a-table :dataSource="dataSource" :columns="columns" />
+      <a-table :dataSource="passengerList" :columns="columns" />
 
         <a-modal v-model:open="open" title="Basic Modal" @ok="handleOk">
             <a-form :model="passenger" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -34,7 +34,7 @@
 <script>
 
 
-import {defineComponent, reactive, ref} from "vue";
+import {defineComponent, onMounted, reactive, ref} from "vue";
 import axios from "axios";
 import {notification} from "ant-design-vue";
 
@@ -45,6 +45,25 @@ export default defineComponent({
     const showModal = () => {
       open.value = true;
     };
+
+    const passengerList = ref([]);
+
+    const columns = [{
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    },
+      {
+        title: '身份证',
+        dataIndex: 'idCard',
+        key: 'idCard',
+      },
+      {
+        title: '旅客类型',
+        dataIndex: 'type',
+        key: 'type',
+      },]
+
     const passenger = reactive({
       id: undefined,
       name: undefined,
@@ -66,6 +85,28 @@ export default defineComponent({
       });
     };
 
+    const queryList = (param) => {
+      axios.get("/member/passenger/getList",{
+        params:{
+          pages: param.page,
+          size: param.size,
+        }}).then(response => {
+        let data = response.data;
+        if (data.code === 200) {
+          passengerList.value = data.data;
+        } else {
+          notification.error({ description: data.message });
+        }
+      });
+    };
+
+    //等页面渲染后，执行查询，添加表格内容
+    onMounted(() => {
+      queryList({
+        page: 1,
+        size: 2
+      })
+    });
 
     const labelCol = {
       style: {
@@ -82,39 +123,8 @@ export default defineComponent({
       passenger,
       labelCol,
       wrapperCol,
-
-      dataSource: [
-        {
-          key: '1',
-          name: '胡彦斌',
-          age: 32,
-          address: '西湖区湖底公园1号',
-        },
-        {
-          key: '2',
-          name: '胡彦祖',
-          age: 42,
-          address: '西湖区湖底公园1号',
-        },
-      ],
-
-      columns: [
-        {
-          title: '姓名',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: '年龄',
-          dataIndex: 'age',
-          key: 'age',
-        },
-        {
-          title: '住址',
-          dataIndex: 'address',
-          key: 'address',
-        },
-      ],
+      passengerList,
+      columns,
     };
 
   },
