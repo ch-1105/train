@@ -6,7 +6,7 @@
       <p>
       <a-button type="primary" @click="showModal">Open Modal</a-button>
       </p>
-      <a-table :dataSource="passengerList" :columns="columns" :pagination="pagination" />
+      <a-table :dataSource="passengerList" :columns="columns" :pagination="pagination" @change="handleTableChange"/>
 
         <a-modal v-model:open="open" title="Basic Modal" @ok="handleOk">
             <a-form :model="passenger" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -97,6 +97,8 @@ export default defineComponent({
     };
 
     const queryList = (param) => {
+      console.log("queryList -> 查看当前分页查询参数：",param)
+
       axios.get("/member/passenger/getList",{
         params:{
           pageNum: param.page,
@@ -107,19 +109,27 @@ export default defineComponent({
           console.log("打印list : ",data.data.list)
           passengerList.value = data.data.list;
           console.log("打印value : ",passengerList.value)
-
           pagination.total = data.data.total;
+          pagination.current = param.page;
         } else {
           notification.error({ description: data.message });
         }
       });
     };
 
+    const handleTableChange = (pagination) => {
+      console.log("查看当前分页查询参数：",pagination)
+      queryList({
+        page: pagination.current,
+        size: pagination.pageSize,
+      })
+    };
+
     //等页面渲染后，执行查询，添加表格内容
     onMounted(() => {
       queryList({
         page: 1,
-        size: 2
+        size : pagination.pageSize
       })
     });
 
@@ -140,7 +150,8 @@ export default defineComponent({
       wrapperCol,
       passengerList,
       columns,
-      pagination
+      pagination,
+      handleTableChange,
     };
 
   },
