@@ -68,13 +68,13 @@ export default defineComponent({
   setup() {
     const open = ref(false);
 
-
     const onAdd = () => {
+      passenger.value = {}
       open.value = true;
     };
 
     const onEdit = (record) => {
-      passenger.value = record
+      passenger.value = window.Tool.copy(record)
       open.value = true;
     };
 
