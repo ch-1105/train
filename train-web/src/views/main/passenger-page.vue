@@ -24,12 +24,20 @@
                   title="删除后不可恢复，确认删除?"
                   @confirm="handleDelete(record)"
                   ok-text="确认"
-                  cancel-text="取消"
-              >
+                  cancel-text="取消">
                 <a style="color: red">删除</a>
               </a-popconfirm>
             </a-space>
          </template>
+
+          <template v-else-if="column.dataIndex === 'type'">
+            <span v-for="item in PASSENGER_TYPE" :key="item.key">
+              <span v-if="record.type === item.key">
+                {{item.value}}
+              </span>
+            </span>
+          </template>
+
         </template>
       </a-table>
 
@@ -48,8 +56,6 @@
               </a-form-item>
             </a-form>
         </a-modal>
-
-
     </div>
 
 </template>
@@ -64,7 +70,11 @@ import {notification} from "ant-design-vue";
 export default defineComponent({
   name: "passenger-view",
   setup() {
-    const PASSENGER_TYPE = [{key: 1, value: '成人'}, {key: 2, value: '儿童'}, {key: 3, value: '学生'}]
+    const PASSENGER_TYPE = [
+      {key: "1", value: "成人"},
+      {key: "2", value: "儿童"},
+      {key: "3", value: "学生"}
+    ]
 
     const open = ref(false);
 
