@@ -70,11 +70,7 @@ import {notification} from "ant-design-vue";
 export default defineComponent({
   name: "passenger-view",
   setup() {
-    const PASSENGER_TYPE = [
-      {key: "1", value: "成人"},
-      {key: "2", value: "儿童"},
-      {key: "3", value: "学生"}
-    ]
+    const PASSENGER_TYPE = window.PASSENGER_TYPE;
 
     const open = ref(false);
 
