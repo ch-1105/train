@@ -46,7 +46,7 @@ token: {{token}}
 }
 
 ### 获取乘客列表
-GET http://localhost:8000/member/passenger/getList
+GET http://localhost:8000/member/passenger/getList?pageNum=1&pageSize=2
 Content-Type: application/json
 token: {{token}}
 

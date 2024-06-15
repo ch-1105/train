@@ -1,5 +1,6 @@
 package com.ch.member.request;
 
+import com.ch.common.req.PageRequest;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.io.Serializable;
  * 乘车人列表查询
  */
 @Data
-public class PassengerQueryRequest implements Serializable {
+public class PassengerQueryRequest extends PageRequest implements Serializable {
 
     private Long memberId;
 }

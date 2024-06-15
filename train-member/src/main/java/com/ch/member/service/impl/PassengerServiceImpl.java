@@ -50,7 +50,7 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
             passengerQueryWrapper.eq("member_id",
                     passenger.getMemberId());
         }
-        PageHelper.startPage(2,2);
+        PageHelper.startPage(passenger.getPageNum(), passenger.getPageSize());
         List<Passenger> passengers = passengerMapper.selectList(passengerQueryWrapper);
         return passengers;
     }

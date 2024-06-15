@@ -6,7 +6,7 @@
       <p>
       <a-button type="primary" @click="showModal">Open Modal</a-button>
       </p>
-      <a-table :dataSource="passengerList" :columns="columns" />
+      <a-table :dataSource="passengerList" :columns="columns" :pagination="pagination" />
 
         <a-modal v-model:open="open" title="Basic Modal" @ok="handleOk">
             <a-form :model="passenger" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -64,6 +64,17 @@ export default defineComponent({
         key: 'type',
       },]
 
+    //分页变量，内容固定
+    const pagination = reactive({
+      current: 0,
+      total: 1,
+      pageSize: 2,
+      // showSizeChanger: true,
+      // showQuickJumper: true,
+      // showTotal: (total) => `共 ${total} 条`,
+      // onChange:
+    });
+
     const passenger = reactive({
       id: undefined,
       name: undefined,
@@ -93,7 +104,8 @@ export default defineComponent({
         }}).then(response => {
         let data = response.data;
         if (data.code === 200) {
-          passengerList.value = data.data;
+          passengerList.value = data.data; 
+          this.pagination.total = data.data.total;
         } else {
           notification.error({ description: data.message });
         }
