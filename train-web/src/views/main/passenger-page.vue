@@ -9,7 +9,13 @@
           <a-button type="primary" @click="showModal">新增</a-button>
         </a-space>
       </p>
-      <a-table :dataSource="passengerList" :columns="columns" :pagination="pagination" @change="handleTableChange"/>
+      <a-table
+          :dataSource="passengerList"
+          :columns="columns"
+          :pagination="pagination"
+          @change="handleTableChange"
+          :loading="loading"
+      />
 
         <a-modal v-model:open="open" title="Basic Modal" @ok="handleOk">
             <a-form :model="passenger" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -50,6 +56,8 @@ export default defineComponent({
     };
 
     const passengerList = ref([]);
+
+    let loading = ref(false)
 
     const columns = [{
       title: '姓名',
@@ -93,6 +101,10 @@ export default defineComponent({
         if (data.code === 200) {
           notification.success({ description: '添加成功！' });
           open.value = false;
+          queryList({
+            page: pagination.current,
+            size : pagination.pageSize
+          })
         } else {
           notification.error({ description: data.message });
         }
@@ -109,11 +121,16 @@ export default defineComponent({
 
       console.log("queryList -> 查看当前分页查询参数：",param)
 
+      //向后端查询前定义为loading=true
+      loading.value = true;
       axios.get("/member/passenger/getList",{
         params:{
           pageNum: param.page,
           pageSize: param.size,
         }}).then(response => {
+        //结束加载
+        loading.value = false;
+
         let data = response.data;
         if (data.code === 200) {
           console.log("打印list : ",data.data.list)
@@ -162,7 +179,8 @@ export default defineComponent({
       columns,
       pagination,
       handleTableChange,
-      queryList
+      queryList,
+      loading
     };
 
   },

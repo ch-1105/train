@@ -56,6 +56,7 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
             passengerQueryWrapper.eq("member_id",
                     passenger.getMemberId());
         }
+        passengerQueryWrapper.orderByDesc("id");
 
         log.info("查询页码 : {}" , passenger.getPageNum());
         log.info("每页条数 : {}" , passenger.getPageSize());
