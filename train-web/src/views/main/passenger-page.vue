@@ -6,7 +6,7 @@
       <p>
         <a-space>
           <a-button type="primary" @click="queryList()">刷新</a-button>
-          <a-button type="primary" @click="showModal">新增</a-button>
+          <a-button type="primary" @click="onAdd">新增</a-button>
         </a-space>
       </p>
       <a-table
@@ -15,7 +15,23 @@
           :pagination="pagination"
           @change="handleTableChange"
           :loading="loading"
-      />
+      >
+        <template #bodyCell="{column, record}">
+          <template v-if="column.dataIndex === 'operation'">
+            <a-space>
+              <a @click="onEdit(record)">编辑</a>
+              <a-popconfirm
+                  title="确认删除?"
+                  @confirm="handleDelete(record)"
+                  ok-text="确认"
+                  cancel-text="取消"
+              >
+                <a>删除</a>
+              </a-popconfirm>
+            </a-space>
+         </template>
+        </template>
+      </a-table>
 
         <a-modal v-model:open="open" title="Basic Modal" @ok="handleOk">
             <a-form :model="passenger" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -43,7 +59,7 @@
 <script>
 
 
-import {defineComponent, onMounted, reactive, ref} from "vue";
+import {defineComponent, onMounted, ref} from "vue";
 import axios from "axios";
 import {notification} from "ant-design-vue";
 
@@ -51,7 +67,14 @@ export default defineComponent({
   name: "passenger-view",
   setup() {
     const open = ref(false);
-    const showModal = () => {
+
+
+    const onAdd = () => {
+      open.value = true;
+    };
+
+    const onEdit = (record) => {
+      passenger.value = record
       open.value = true;
     };
 
@@ -73,10 +96,15 @@ export default defineComponent({
         title: '旅客类型',
         dataIndex: 'type',
         key: 'type',
+      },
+      {
+        title: '行为',
+        dataIndex: 'operation',
+        key: 'operation',
       },]
 
     //分页变量，内容固定
-    const pagination = reactive({
+    const pagination = ref({
       current: 0,
       total: 1,
       pageSize: 2,
@@ -86,7 +114,7 @@ export default defineComponent({
       // onChange:
     });
 
-    const passenger = reactive({
+    const passenger = ref({
       id: undefined,
       name: undefined,
       idCard: undefined,
@@ -96,14 +124,14 @@ export default defineComponent({
       updateTime: undefined,
     });
     const handleOk = () => {
-      axios.post("/member/passenger/save", passenger,).then(response => {
+      axios.post("/member/passenger/save", passenger.value).then(response => {
         let data = response.data;
         if (data.code === 200) {
           notification.success({ description: '添加成功！' });
           open.value = false;
           queryList({
-            page: pagination.current,
-            size : pagination.pageSize
+            page: pagination.value.current,
+            size : pagination.value.pageSize
           })
         } else {
           notification.error({ description: data.message });
@@ -115,7 +143,7 @@ export default defineComponent({
       if (param === undefined|| param === null){
         param = {
           page: 1,
-          size: pagination.pageSize,
+          size: pagination.value.pageSize,
         }
       }
 
@@ -136,8 +164,8 @@ export default defineComponent({
           console.log("打印list : ",data.data.list)
           passengerList.value = data.data.list;
           console.log("打印value : ",passengerList.value)
-          pagination.total = data.data.total;
-          pagination.current = param.page;
+          pagination.value.total = data.data.total;
+          pagination.value.current = param.page;
         } else {
           notification.error({ description: data.message });
         }
@@ -147,16 +175,34 @@ export default defineComponent({
     const handleTableChange = (pagination) => {
       console.log("查看当前分页查询参数：",pagination)
       queryList({
-        page: pagination.current,
-        size: pagination.pageSize,
+        page: pagination.value.current,
+        size: pagination.value.pageSize,
       })
+    };
+
+    const handleDelete = (record) => {
+      axios.get("/member/passenger/delete",{
+        params:{
+          id: record.id,
+        }}).then(response => {
+          let data = response.data;
+          if (data.code === 200){
+            notification.success({ description: '删除成功！' });
+            queryList({
+              page: pagination.value.current,
+              size : pagination.value.pageSize
+            })
+          } else {
+            notification.error({ description: data.message });
+          }
+      });
     };
 
     //等页面渲染后，执行查询，添加表格内容
     onMounted(() => {
       queryList({
         page: 1,
-        size : pagination.pageSize
+        size : pagination.value.pageSize
       })
     });
 
@@ -170,7 +216,7 @@ export default defineComponent({
     };
     return {
       open,
-      showModal,
+      onAdd,
       handleOk,
       passenger,
       labelCol,
@@ -180,7 +226,9 @@ export default defineComponent({
       pagination,
       handleTableChange,
       queryList,
-      loading
+      loading,
+      onEdit,
+      handleDelete,
     };
 
   },
