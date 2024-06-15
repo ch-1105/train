@@ -43,9 +43,7 @@
               </a-form-item>
               <a-form-item label="类型">
                 <a-select v-model:value="passenger.type">
-                  <a-select-option value="1" >成人</a-select-option>
-                  <a-select-option value="1" >儿童</a-select-option>
-                  <a-select-option value="1" >学生</a-select-option>
+                  <a-select-option v-for="item in PASSENGER_TYPE" :key="item.key" :value="item.key" >{{item.value}}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-form>
@@ -66,6 +64,8 @@ import {notification} from "ant-design-vue";
 export default defineComponent({
   name: "passenger-view",
   setup() {
+    const PASSENGER_TYPE = [{key: 1, value: '成人'}, {key: 2, value: '儿童'}, {key: 3, value: '学生'}]
+
     const open = ref(false);
 
     const onAdd = () => {
@@ -226,6 +226,7 @@ export default defineComponent({
       loading,
       onEdit,
       handleDelete,
+      PASSENGER_TYPE,
     };
 
   },
