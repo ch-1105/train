@@ -12,6 +12,7 @@ import com.ch.member.mapper.PassengerMapper;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
 import com.ch.member.service.PassengerService;
+import com.github.pagehelper.PageHelper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,7 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
             passengerQueryWrapper.eq("member_id",
                     passenger.getMemberId());
         }
+        PageHelper.startPage(2,2);
         List<Passenger> passengers = passengerMapper.selectList(passengerQueryWrapper);
         return passengers;
     }
