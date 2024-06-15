@@ -7,13 +7,18 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.common.context.LoginMemberContext;
+import com.ch.common.resp.PageResponse;
 import com.ch.member.domain.Passenger;
 import com.ch.member.mapper.PassengerMapper;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
+import com.ch.member.responce.PassengerQueryResponse;
 import com.ch.member.service.PassengerService;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +31,7 @@ import java.util.List;
 @Service
 public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger>
     implements PassengerService {
+    private static final Logger log = LoggerFactory.getLogger(PassengerServiceImpl.class);
     @Resource
     PassengerMapper passengerMapper;
 
@@ -42,7 +48,7 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
     }
 
     @Override
-    public List<Passenger> getPassengerList(PassengerQueryRequest passenger) {
+    public PageResponse<PassengerQueryResponse> getPassengerList(PassengerQueryRequest passenger) {
         QueryWrapper<Passenger> passengerQueryWrapper = new QueryWrapper<>();
         //service设计成通用，为以后拓展
 
@@ -50,9 +56,24 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
             passengerQueryWrapper.eq("member_id",
                     passenger.getMemberId());
         }
+
+        log.info("查询页码 : {}" , passenger.getPageNum());
+        log.info("每页条数 : {}" , passenger.getPageSize());
         PageHelper.startPage(passenger.getPageNum(), passenger.getPageSize());
-        List<Passenger> passengers = passengerMapper.selectList(passengerQueryWrapper);
-        return passengers;
+
+        List<Passenger> passengerList = passengerMapper.selectList(passengerQueryWrapper);
+
+        PageInfo<Passenger> info = new PageInfo<>(passengerList);
+        log.info("总条数 : {}" , info.getTotal());
+        log.info("总页数 : {}" , info.getPages());
+        //封装返回结果
+        List<PassengerQueryResponse> responseListlist = BeanUtil.copyToList(passengerList, PassengerQueryResponse.class);
+
+        PageResponse<PassengerQueryResponse> resp = new PageResponse<>();
+        resp.setList(responseListlist);
+        resp.setTotal(info.getTotal());
+
+        return resp;
     }
 }
 

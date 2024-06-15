@@ -2,11 +2,11 @@ package com.ch.member.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ch.common.resp.PageResponse;
 import com.ch.member.domain.Passenger;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
-
-import java.util.List;
+import com.ch.member.responce.PassengerQueryResponse;
 
 /**
 * @author ch051
@@ -17,5 +17,5 @@ public interface PassengerService extends IService<Passenger> {
 
     void savePassenger(PassengerSaveRequest passenger);
 
-    List<Passenger> getPassengerList(PassengerQueryRequest passenger);
+    PageResponse<PassengerQueryResponse> getPassengerList(PassengerQueryRequest passenger);
 }
