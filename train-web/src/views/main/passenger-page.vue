@@ -99,13 +99,16 @@ export default defineComponent({
     const queryList = (param) => {
       axios.get("/member/passenger/getList",{
         params:{
-          pages: param.page,
-          size: param.size,
+          pageNum: param.page,
+          pageSize: param.size,
         }}).then(response => {
         let data = response.data;
         if (data.code === 200) {
-          passengerList.value = data.data; 
-          this.pagination.total = data.data.total;
+          console.log("打印list : ",data.data.list)
+          passengerList.value = data.data.list;
+          console.log("打印value : ",passengerList.value)
+
+          pagination.total = data.data.total;
         } else {
           notification.error({ description: data.message });
         }
@@ -137,6 +140,7 @@ export default defineComponent({
       wrapperCol,
       passengerList,
       columns,
+      pagination
     };
 
   },
