@@ -1,6 +1,6 @@
-package com.ch.common.context;
+package com.ch.train.common.context;
 
-import com.ch.common.resp.MemberLoginResponce;
+import com.ch.train.common.response.MemberLoginResponce;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

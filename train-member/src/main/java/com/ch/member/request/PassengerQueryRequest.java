@@ -1,6 +1,6 @@
 package com.ch.member.request;
 
-import com.ch.common.req.PageRequest;
+import com.ch.train.common.request.PageRequest;
 import lombok.Data;
 
 import java.io.Serializable;

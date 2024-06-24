@@ -1,4 +1,4 @@
-package com.ch.common.utils;
+package com.ch.train.common.utils;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.ch.member.config;
 
 
-import com.ch.common.interceptor.MemberInterceptor;
+import com.ch.train.common.interceptor.MemberInterceptor;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

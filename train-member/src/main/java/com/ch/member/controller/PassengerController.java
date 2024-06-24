@@ -1,8 +1,8 @@
 package com.ch.member.controller;
 
-import com.ch.common.context.LoginMemberContext;
-import com.ch.common.resp.PageResponse;
-import com.ch.common.result.Result;
+import com.ch.train.common.context.LoginMemberContext;
+import com.ch.train.common.response.PageResponse;
+import com.ch.train.common.result.Result;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
 import com.ch.member.responce.PassengerQueryResponse;

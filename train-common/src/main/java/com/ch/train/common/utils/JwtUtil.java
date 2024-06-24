@@ -1,4 +1,4 @@
-package com.ch.common.utils;
+package com.ch.train.common.utils;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;

@@ -1,4 +1,4 @@
-package com.ch.common.config;
+package com.ch.train.common.config;
 
 /**
  * author: ch

@@ -1,6 +1,6 @@
-package com.ch.common.utils;
+package com.ch.train.common.utils;
 
-import com.ch.common.result.Result;
+import com.ch.train.common.result.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

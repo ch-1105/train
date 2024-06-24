@@ -1,15 +1,12 @@
 package com.ch.member.service.impl;
 
-import cn.hutool.Hutool;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ch.common.utils.GlobalException;
-import com.ch.common.utils.JwtUtil;
+import com.ch.train.common.utils.GlobalException;
+import com.ch.train.common.utils.JwtUtil;
 import com.ch.member.domain.Member;
 import com.ch.member.mapper.MemberMapper;
 import com.ch.member.request.MemberLoginRequest;
@@ -22,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
 * @author ch051
@@ -48,6 +44,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
             memberMapper.insert(member);
             return member.getId();
         }
+
         throw new GlobalException(400,"手机号已存在");
     }
 

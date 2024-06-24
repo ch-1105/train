@@ -1,4 +1,4 @@
-package com.ch.common.resp;
+package com.ch.train.common.response;
 
 import lombok.Data;
 

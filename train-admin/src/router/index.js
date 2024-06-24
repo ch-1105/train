@@ -4,10 +4,6 @@ import store from "@/store";
 const routes = [
   {
     path: '/',
-    component: () => import('../views/login-page.vue')
-  },
-  {
-    path: '/welcome',
     component: () => import('../views/main-page.vue'),
     meta: {
       loginRequired: true
@@ -16,10 +12,6 @@ const routes = [
       {
         path: '/welcome',
         component: () => import('../views/main/welcome-page.vue')
-      },
-      {
-        path: '/passenger',
-        component: () => import('../views/main/passenger-page.vue')
       },
     ]
   }

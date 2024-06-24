@@ -1,4 +1,4 @@
-package com.ch.common.interceptor;
+package com.ch.train.common.interceptor;
 
 /**
  * author: ch
@@ -9,9 +9,9 @@ package com.ch.common.interceptor;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.ch.common.context.LoginMemberContext;
-import com.ch.common.resp.MemberLoginResponce;
-import com.ch.common.utils.JwtUtil;
+import com.ch.train.common.context.LoginMemberContext;
+import com.ch.train.common.response.MemberLoginResponce;
+import com.ch.train.common.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;

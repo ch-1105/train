@@ -1,4 +1,4 @@
-package com.ch.common.result;
+package com.ch.train.common.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

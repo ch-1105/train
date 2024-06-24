@@ -4,6 +4,10 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: business
+          uri: http://localhost:8082
+          predicates:
+            - Path=/business/**
         - id: member
           # uri: lb://user-service # 转发的目标服务地址，这里使用负载均衡器lb前缀
           uri: http://localhost:8080

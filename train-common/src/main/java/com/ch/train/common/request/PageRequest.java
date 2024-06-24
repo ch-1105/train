@@ -1,4 +1,4 @@
-package com.ch.common.req;
+package com.ch.train.common.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;

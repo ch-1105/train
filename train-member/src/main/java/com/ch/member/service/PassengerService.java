@@ -2,7 +2,7 @@ package com.ch.member.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ch.common.resp.PageResponse;
+import com.ch.train.common.response.PageResponse;
 import com.ch.member.domain.Passenger;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;

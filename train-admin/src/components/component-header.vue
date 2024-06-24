@@ -5,6 +5,9 @@
 <template>
   <a-layout-header class="component-header" id="components-layout-demo-top-side" >
     <div class="logo" />
+    <div>
+      管理控制台
+    </div>
     <div style="float:right;color:white;">
       您好:{{member.mobile}} &nbsp; &nbsp;
       <router-link to="/">

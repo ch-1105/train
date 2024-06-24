@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 </#if>
 </#list>
 
-public class ${Domain}QueryResponseonse {
+public class ${Domain}QueryResponse {
 
     <#list fieldList as field>
     /**

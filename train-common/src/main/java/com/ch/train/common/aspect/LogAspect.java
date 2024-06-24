@@ -1,4 +1,4 @@
-package com.ch.common.aspect;
+package com.ch.train.common.aspect;
 
 
 

@@ -1,6 +1,6 @@
 package com.ch.member.controller;
 
-import com.ch.common.result.Result;
+import com.ch.train.common.result.Result;
 import com.ch.member.request.MemberLoginRequest;
 import com.ch.member.request.MemberRequest;
 import com.ch.member.responce.MemberLoginResponce;
