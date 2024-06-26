@@ -11,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 </#if>
 </#list>
+import lombok.Data;
 
+@Data
 public class ${Domain}QueryResponse {
 
     <#list fieldList as field>
@@ -33,26 +35,4 @@ public class ${Domain}QueryResponse {
     private ${field.javaType} ${field.nameHump};
 
     </#list>
-    <#list fieldList as field>
-    public ${field.javaType} get${field.nameBigHump}() {
-        return ${field.nameHump};
-    }
-
-    public void set${field.nameBigHump}(${field.javaType} ${field.nameHump}) {
-        this.${field.nameHump} = ${field.nameHump};
-    }
-
-    </#list>
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        <#list fieldList as field>
-        sb.append(", ${field.nameHump}=").append(${field.nameHump});
-        </#list>
-        sb.append("]");
-        return sb.toString();
-    }
 }
