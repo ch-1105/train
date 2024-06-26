@@ -9,7 +9,7 @@
       管理控制台
     </div>
     <div style="float:right;color:white;">
-      您好:{{member.mobile}} &nbsp; &nbsp;
+      您好: admin &nbsp; &nbsp;
       <router-link to="/">
         退出登录
       </router-link>
@@ -20,14 +20,14 @@
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
     >
-      <a-menu-item key="/welcome">
-        <router-link to="/welcome">
+      <a-menu-item key="/">
+        <router-link to="/">
           welcome
         </router-link>
       </a-menu-item>
-      <a-menu-item key="/passenger">
-        <router-link to="/passenger">
-          passenger
+      <a-menu-item key="/station">
+        <router-link to="/station">
+          station
         </router-link>
       </a-menu-item>
     </a-menu>
