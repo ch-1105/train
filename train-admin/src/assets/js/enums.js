@@ -10,3 +10,17 @@ SEAT_TYPE=[
     {key:"3",value:"软卧",price:"0.6"},
     {key:"4",value:"硬卧",price:"0.5"}
 ];
+
+SEAT_COL=[
+    {key:"A",value:"A",type:"1"},
+    {key:"C",value:"C",type:"1"},
+    {key:"D",value:"D",type:"1"},
+    {key:"F",value:"F",type:"1"},
+    {key:"A",value:"A",type:"2"},
+    {key:"B",value:"B",type:"2"},
+    {key:"C",value:"C",type:"2"},
+    {key:"D",value:"D",type:"2"},
+    {key:"F",value:"F",type:"2"}
+];
+
+
