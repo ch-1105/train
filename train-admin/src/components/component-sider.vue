@@ -36,6 +36,11 @@
             train-station
           </router-link>
         </a-menu-item>
+        <a-menu-item key="/train-carriage">
+          <router-link to="/train-carriage">
+            train-carriage
+          </router-link>
+        </a-menu-item>
       </a-sub-menu>
     </a-menu>
   </a-layout-sider>
