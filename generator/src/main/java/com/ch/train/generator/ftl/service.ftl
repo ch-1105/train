@@ -8,7 +8,7 @@ import com.ch.train.${module}.response.${Domain}QueryResponse;
 
 import com.ch.train.common.response.PageResponse;
 
-public interface ${Domain}Service extends IService<Domain>{
+public interface ${Domain}Service extends IService<${Domain}>{
 
     void save(${Domain}SaveRequest request);
 

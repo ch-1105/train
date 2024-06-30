@@ -30,6 +30,11 @@
           station
         </router-link>
       </a-menu-item>
+      <a-menu-item key="/train">
+        <router-link to="/train">
+          train
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-header>
 

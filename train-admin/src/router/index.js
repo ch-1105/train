@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from "@/store";
 
 const routes = [
   {
@@ -16,6 +15,10 @@ const routes = [
       {
         path: '/station',
         component: () => import('../views/main/station.vue')
+      },
+      {
+        path: '/train',
+        component: () => import('../views/main/train.vue')
       },
     ]
   }
