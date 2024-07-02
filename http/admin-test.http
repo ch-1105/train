@@ -1,0 +1,70 @@
+GET http://localhost:8082/business/admin/train/query-all-train
+Accept: application/json
+
+###
+POST http://localhost:8000/business/admin/station/save
+Content-Type: application/json
+
+{
+  "name": "天津站",
+  "namePinyin": "tianjinzhan",
+  "namePy": "tjz"
+}
+
+### 手机验证码类
+POST http://localhost:8000/member/sendCode
+Content-Type: application/json
+
+{
+  "mobile": "11100000000"
+}
+
+
+
+### 登录 获取token
+POST http://localhost:8000/member/login
+Content-Type: application/json
+
+{
+  "mobile": "11100000000",
+  "code": "8888"
+}
+
+> {%
+    client.log(JSON.stringify(response.body));
+    client.log(JSON.stringify(response.body.data.token));
+    client.global.set("token", response.body.data.token);
+%}
+
+### 新建乘客
+POST http://localhost:8000/member/passenger/save
+Content-Type: application/json
+token: {{token}}
+
+{
+  "name": "zhangsan",
+  "idCard": "xxxx",
+  "type": 2
+}
+
+### 获取乘客列表
+GET http://localhost:8000/member/passenger/getList?pageNum=1&pageSize=2
+Content-Type: application/json
+token: {{token}}
+
+{
+}
+
+
+### 更新乘客
+POST http://localhost:8000/member/passenger/save
+Content-Type: application/json
+token: {{token}}
+
+{
+  "id": 1801889422719930368,
+  "memberId": 1793640952133345280,
+  "name": "lisi",
+  "idCard": "4444",
+  "type": 2
+}

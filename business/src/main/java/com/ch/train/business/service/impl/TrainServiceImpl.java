@@ -68,4 +68,16 @@ public class TrainServiceImpl extends ServiceImpl<TrainMapper, Train> implements
     public void delete(Long id) {
         trainMapper.deleteById(id);
     }
+
+    @Override
+    public List<TrainQueryResponse> queryAllTrain() {
+        QueryWrapper<Train> trainWrapper = new QueryWrapper<>();
+        //根据车次编号排列
+        trainWrapper.orderByDesc("code");
+
+        List<Train> trainList = trainMapper.selectList(trainWrapper);
+
+        return BeanUtil.copyToList(trainList, TrainQueryResponse.class);
+    }
+
 }
