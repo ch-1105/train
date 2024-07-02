@@ -23,27 +23,27 @@
           </a-menu-item>
         <a-menu-item key="/station">
           <router-link to="/station">
-            station
+            站点管理
           </router-link>
         </a-menu-item>
         <a-menu-item key="/train">
           <router-link to="/train">
-            train
+            火车管理
           </router-link>
         </a-menu-item>
         <a-menu-item key="/train-station">
           <router-link to="/train-station">
-            train-station
+            火车车站管理
           </router-link>
         </a-menu-item>
         <a-menu-item key="/train-carriage">
           <router-link to="/train-carriage">
-            train-carriage
+            车厢管理
           </router-link>
         </a-menu-item>
         <a-menu-item key="/train-seat">
           <router-link to="/train-seat">
-            train-seat
+            座位管理
           </router-link>
         </a-menu-item>
       </a-sub-menu>
