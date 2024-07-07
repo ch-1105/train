@@ -1,9 +1,8 @@
-
-
 <template>
   <a-select v-model:value="trainCode" show-search allow-clear
             :filter-option="filterTrain"
-            @change="onChange">
+            @change="onChange"
+            :style="' width: ' + localWidth">
     <a-select-option v-for="item in trains" :key="item.code" :value="item.code" :lable = "item.code + item.start + item.end">
       {{item.code}} | {{item.start}} ~ {{item.end}}
     </a-select-option>
@@ -18,11 +17,15 @@ import {notification} from "ant-design-vue";
 // eslint-disable-next-line vue/no-export-in-script-setup
 export default defineComponent({
   name: "train-select-view",
-  props: ["modelValue"],
+  props: ["modelValue" , "width"],
   emits: ["update:modelValue", "change"],
   setup(props, {emit}) {
     const trainCode = ref();
 
+    const localWidth = ref(props.width);
+    if (Tool.isEmpty(localWidth)){
+      localWidth.value = "100%"
+    }
     // -------  车次下拉框  -------
     const trains = ref([]);
     // 查询所有车次
@@ -69,6 +72,7 @@ export default defineComponent({
       trains,
       onChange,
       filterTrain,
+      localWidth
     };
   },
 });

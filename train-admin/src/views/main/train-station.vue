@@ -28,7 +28,7 @@
            ok-text="确认" cancel-text="取消">
     <a-form :model="trainStation" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
-        <train-select-view v-model="trainStation.trainCode" />
+        <train-select-view v-model="trainStation.trainCode" width="50%"/>
         <!--<a-select v-model:value="trainStation.trainCode" show-search-->
         <!--          :filter-option="filterTrain">-->
         <!--  <a-select-option v-for="item in trains" :key="item.code" :value="item.code" :lable = "item.code + item.start + item.end">-->
