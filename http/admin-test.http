@@ -1,15 +1,11 @@
 GET http://localhost:8082/business/admin/train/query-all-train
 Accept: application/json
 
+
 ###
-POST http://localhost:8000/business/admin/station/save
+GET http://localhost:8082/business/admin/station/query-all-station
 Content-Type: application/json
 
-{
-  "name": "天津站",
-  "namePinyin": "tianjinzhan",
-  "namePy": "tjz"
-}
 
 ### 手机验证码类
 POST http://localhost:8000/member/sendCode

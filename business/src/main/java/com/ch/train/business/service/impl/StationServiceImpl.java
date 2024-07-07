@@ -68,4 +68,12 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
     public void delete(Long id) {
         stationMapper.deleteById(id);
     }
+
+    @Override
+    public List<StationQueryResponse> queryAll() {
+        QueryWrapper<Station> wrapper = new QueryWrapper<>();
+        wrapper.orderByAsc("name_pinyin");
+        List<Station> stations = stationMapper.selectList(wrapper);
+        return BeanUtil.copyToList(stations, StationQueryResponse.class);
+    }
 }

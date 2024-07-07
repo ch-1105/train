@@ -34,7 +34,7 @@
         <a-input v-model:value="trainStation.stationIndex" />
       </a-form-item>
       <a-form-item label="站名">
-        <a-input v-model:value="trainStation.name" />
+        <station-select-view v-model="trainStation.name" />
       </a-form-item>
       <a-form-item label="站名拼音">
         <a-input v-model:value="trainStation.namePinyin" disabled/>
@@ -61,10 +61,11 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 import {pinyin} from "pinyin-pro";
 import TrainSelect from "@/components/train-select.vue";
+import StationSelectView from "@/components/station-select.vue";
 
 export default defineComponent({
   name: "train-station-view",
-  components: {TrainSelect},
+  components: {StationSelectView, TrainSelect},
   setup() {
     const visible = ref(false);
     let trainStation = ref({
