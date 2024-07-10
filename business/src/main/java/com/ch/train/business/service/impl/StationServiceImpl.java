@@ -35,10 +35,8 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(request, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
-            QueryWrapper<Station> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("name", station.getName());
-            List<Station> stations = stationMapper.selectList(queryWrapper);
-            if (!stations.isEmpty()) {
+            Station stationDB = getUnionStations(station.getName());
+            if (ObjectUtil.isNotNull(stationDB)) {
                 throw new GlobalException("该车站名称已存在");
             }
             station.setId(IdUtil.getSnowflakeNextId());
@@ -49,6 +47,16 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
             station.setUpdateTime(now);
             stationMapper.updateById(station);
         }
+    }
+
+    private Station getUnionStations(String name) {
+        QueryWrapper<Station> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", name);
+        List<Station> list = stationMapper.selectList(queryWrapper);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
     }
 
     public PageResponse<StationQueryResponse> queryList(StationQueryRequest request) {
