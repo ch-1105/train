@@ -30,6 +30,7 @@ public class ${Domain}ServiceImpl extends ServiceImpl<${Domain}Mapper, ${Domain}
     @Resource
     private ${Domain}Mapper ${domain}Mapper;
 
+    @Override
     public void save(${Domain}SaveRequest request) {
         DateTime now = DateTime.now();
         ${Domain} ${domain} = BeanUtil.copyProperties(request, ${Domain}.class);
@@ -43,7 +44,7 @@ public class ${Domain}ServiceImpl extends ServiceImpl<${Domain}Mapper, ${Domain}
             ${domain}Mapper.updateById(${domain});
         }
     }
-
+    @Override
     public PageResponse<${Domain}QueryResponse> queryList(${Domain}QueryRequest request) {
         QueryWrapper<${Domain}> ${domain}Wrapper = new QueryWrapper<>();
         ${domain}Wrapper.orderByDesc("id");
@@ -64,7 +65,7 @@ public class ${Domain}ServiceImpl extends ServiceImpl<${Domain}Mapper, ${Domain}
         pageResponse.setList(list);
         return pageResponse;
     }
-
+    @Override
     public void delete(Long id) {
         ${domain}Mapper.deleteById(id);
     }
