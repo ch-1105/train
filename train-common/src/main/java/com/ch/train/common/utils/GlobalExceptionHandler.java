@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.stream.Collectors;
 
@@ -18,11 +19,12 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     // 处理自定义异常
+    @ResponseBody
     @ExceptionHandler(value = {GlobalException.class}) // 捕捉特定的自定义异常
-    public ResponseEntity<Object> handleCustomException(GlobalException ex) {
+    public Result<Object> handleCustomException(GlobalException ex) {
         // 这里可以对异常进行日志记录等操作
         Result<String> result = new Result<>(ex.getCode(), ex.getMessage(), null);
-        return new ResponseEntity<>(result, HttpStatus.EXPECTATION_FAILED);
+        return Result.fail(ex.getCode(), ex.getMessage());
     }
 
     // 处理所有未被捕获的异常

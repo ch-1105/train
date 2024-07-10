@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.ch.train.common.utils.GlobalException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ch.train.common.response.PageResponse;
@@ -34,6 +35,12 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(request, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
+            QueryWrapper<Station> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("name", station.getName());
+            List<Station> stations = stationMapper.selectList(queryWrapper);
+            if (!stations.isEmpty()) {
+                throw new GlobalException("该车站名称已存在");
+            }
             station.setId(IdUtil.getSnowflakeNextId());
             station.setCreateTime(now);
             station.setUpdateTime(now);
