@@ -24,14 +24,14 @@
       </template>
       <template v-else-if="column.dataIndex === 'col'">
         <span v-for="item in SEAT_COL" :key="item.key">
-          <span v-if="item.key === record.col">
+          <span v-if="item.key === record.col && item.type === record.seatType">
             {{item.value}}
           </span>
         </span>
       </template>
       <template v-else-if="column.dataIndex === 'seatType'">
         <span v-for="item in SEAT_TYPE" :key="item.key">
-          <span v-if="item.key === record.seatType">
+          <span v-if="item.key === record.seatType ">
             {{item.value}}
           </span>
         </span>
