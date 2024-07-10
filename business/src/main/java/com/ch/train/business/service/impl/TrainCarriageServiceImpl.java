@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.ch.train.business.enums.SeatColEnum;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ch.train.common.response.PageResponse;
@@ -33,6 +34,18 @@ public class TrainCarriageServiceImpl extends ServiceImpl<TrainCarriageMapper, T
     public void save(TrainCarriageSaveRequest request) {
         DateTime now = DateTime.now();
         TrainCarriage trainCarriage = BeanUtil.copyProperties(request, TrainCarriage.class);
+
+        // 自动计算列数和车厢总数
+        String seatType = request.getSeatType();
+        List<SeatColEnum> colsByType = SeatColEnum.getColsByType(seatType);
+        int colCount = colsByType.size();
+        // 计算车厢总数
+        Integer rowCount = request.getRowCount();
+        int carriageCount = rowCount * colCount;
+        //保存
+        trainCarriage.setSeatCount(carriageCount);
+        trainCarriage.setColCount(colCount);
+
         if (ObjectUtil.isNull(trainCarriage.getId())) {
             trainCarriage.setId(IdUtil.getSnowflakeNextId());
             trainCarriage.setCreateTime(now);
@@ -46,7 +59,8 @@ public class TrainCarriageServiceImpl extends ServiceImpl<TrainCarriageMapper, T
 
     public PageResponse<TrainCarriageQueryResponse> queryList(TrainCarriageQueryRequest request) {
         QueryWrapper<TrainCarriage> trainCarriageWrapper = new QueryWrapper<>();
-        trainCarriageWrapper.orderByDesc("id");
+        trainCarriageWrapper.orderByAsc("train_code");
+        trainCarriageWrapper.orderByAsc("carriage_index");
 
         LOG.info("查询页码：{}", request.getPageNum());
         LOG.info("每页条数：{}", request.getPageSize());
