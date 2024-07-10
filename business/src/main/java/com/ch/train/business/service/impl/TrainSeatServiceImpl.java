@@ -4,21 +4,27 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.ch.train.common.response.PageResponse;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ch.train.business.domain.TrainCarriage;
 import com.ch.train.business.domain.TrainSeat;
+import com.ch.train.business.enums.SeatColEnum;
+import com.ch.train.business.enums.SeatTypeEnum;
 import com.ch.train.business.mapper.TrainSeatMapper;
-import com.ch.train.business.service.TrainSeatService;
 import com.ch.train.business.request.TrainSeatQueryRequest;
 import com.ch.train.business.request.TrainSeatSaveRequest;
 import com.ch.train.business.response.TrainSeatQueryResponse;
+import com.ch.train.business.service.TrainCarriageService;
+import com.ch.train.business.service.TrainSeatService;
+import com.ch.train.common.response.PageResponse;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +35,9 @@ public class TrainSeatServiceImpl extends ServiceImpl<TrainSeatMapper, TrainSeat
 
     @Resource
     private TrainSeatMapper trainSeatMapper;
+
+    @Resource
+    private TrainCarriageService trainCarriageService;
 
     public void save(TrainSeatSaveRequest request) {
         DateTime now = DateTime.now();
@@ -64,8 +73,47 @@ public class TrainSeatServiceImpl extends ServiceImpl<TrainSeatMapper, TrainSeat
         pageResponse.setList(list);
         return pageResponse;
     }
-
+    @Override
     public void delete(Long id) {
         trainSeatMapper.deleteById(id);
+    }
+
+    @Transactional
+    public void generatorTrainSeat( String trainCode){
+        DateTime now = DateTime.now();
+        // 0.清空车次座位
+        trainSeatMapper.deleteByTrainCode(trainCode);
+        // 1.根据 查询车厢列表
+        QueryWrapper<TrainCarriage> carriageQueryWrapper = new QueryWrapper<>();
+        carriageQueryWrapper.eq("train_code", trainCode);
+        List<TrainCarriage> list = trainCarriageService.list(carriageQueryWrapper);
+        // 2.进行循环插入
+        for (TrainCarriage trainCarriage : list) {
+            // 每车厢座位索引
+            int seatIndex = 1;
+            //1.根据每车厢查询行号 列号 车次类型 插入数据
+            Integer rowCount = trainCarriage.getRowCount();
+            String seatType = trainCarriage.getSeatType();
+            //2.根据车次类型 查询座位列表
+            SeatTypeEnum seatEnum = SeatTypeEnum.getEnumByCode(seatType);
+            List<SeatColEnum> colsEnum = SeatColEnum.getColsByType(seatType);
+            //3.循环行
+            for (int i = 1; i <= rowCount; i++) {
+                //循环列
+                for (SeatColEnum seatColEnum : colsEnum) {
+                    TrainSeat trainSeat = new TrainSeat();
+                    trainSeat.setId(IdUtil.getSnowflakeNextId());
+                    trainSeat.setTrainCode(trainCode);
+                    trainSeat.setRow(StrUtil.fillBefore(String.valueOf(i), '0', 2));
+                    trainSeat.setCol(seatColEnum.getCode());
+                    trainSeat.setSeatType(seatEnum.getCode());
+                    trainSeat.setCarriageIndex(trainCarriage.getCarriageIndex());
+                    trainSeat.setCarriageSeatIndex(seatIndex++);
+                    trainSeat.setCreateTime(now);
+                    trainSeat.setUpdateTime(now);
+                    trainSeatMapper.insert(trainSeat);
+                }
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.ch.train.business.domain.TrainSeat
 */
 public interface TrainSeatMapper extends BaseMapper<TrainSeat> {
-
+    void deleteByTrainCode(String trainCode);
 }
 
 

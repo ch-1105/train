@@ -21,4 +21,8 @@
         row,col,seat_type,
         carriage_seat_index,create_time,update_time
     </sql>
+
+    <delete id="deleteByTrainCode">
+        delete from train_seat where train_code = #{trainCode}
+    </delete>
 </mapper>

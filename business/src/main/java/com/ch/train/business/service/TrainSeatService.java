@@ -15,4 +15,6 @@ public interface TrainSeatService extends IService<TrainSeat>{
     PageResponse<TrainSeatQueryResponse> queryList(TrainSeatQueryRequest request);
 
     void delete(Long id);
+
+    void generatorTrainSeat( String trainCode);
 }
