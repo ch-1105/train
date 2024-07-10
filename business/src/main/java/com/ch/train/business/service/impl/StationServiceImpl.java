@@ -37,7 +37,7 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         if (ObjectUtil.isNull(station.getId())) {
             Station stationDB = getUnionStation(station.getName());
             if (ObjectUtil.isNotNull(stationDB)) {
-                throw new GlobalException("该车站名称已存在");
+                throw new GlobalException(1002,"该车站已存在");
             }
             station.setId(IdUtil.getSnowflakeNextId());
             station.setCreateTime(now);

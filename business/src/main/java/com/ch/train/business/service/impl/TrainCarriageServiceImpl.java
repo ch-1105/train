@@ -4,7 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.ch.train.business.domain.TrainCarriage;
 import com.ch.train.business.enums.SeatColEnum;
+import com.ch.train.common.utils.GlobalException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ch.train.common.response.PageResponse;
@@ -47,6 +49,11 @@ public class TrainCarriageServiceImpl extends ServiceImpl<TrainCarriageMapper, T
         trainCarriage.setColCount(colCount);
 
         if (ObjectUtil.isNull(trainCarriage.getId())) {
+            TrainCarriage unionTrainCarriage = getUnionTrainCarriage(request.getTrainCode(), String.valueOf(request.getCarriageIndex()));
+            if (ObjectUtil.isNotNull(unionTrainCarriage)) {
+                throw new GlobalException(1002,"车厢已经存在");
+            }
+
             trainCarriage.setId(IdUtil.getSnowflakeNextId());
             trainCarriage.setCreateTime(now);
             trainCarriage.setUpdateTime(now);
@@ -81,5 +88,16 @@ public class TrainCarriageServiceImpl extends ServiceImpl<TrainCarriageMapper, T
 
     public void delete(Long id) {
         trainCarriageMapper.deleteById(id);
+    }
+
+    private TrainCarriage getUnionTrainCarriage(String trainCode,String carriageIndex) {
+        QueryWrapper<TrainCarriage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("train_code", trainCode);
+        queryWrapper.eq("carriage_index", carriageIndex);
+        List<TrainCarriage> list = trainCarriageMapper.selectList(queryWrapper);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
     }
 }

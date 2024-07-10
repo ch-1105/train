@@ -4,6 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.ch.train.business.domain.Train;
+import com.ch.train.common.utils.GlobalException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ch.train.common.response.PageResponse;
@@ -34,6 +36,10 @@ public class TrainServiceImpl extends ServiceImpl<TrainMapper, Train> implements
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(request, Train.class);
         if (ObjectUtil.isNull(train.getId())) {
+            Train unionTrain = getUnionTrain(train.getCode());
+            if (ObjectUtil.isNotNull(unionTrain)) {
+                throw new GlobalException(1002, "车次已存在");
+            }
             train.setId(IdUtil.getSnowflakeNextId());
             train.setCreateTime(now);
             train.setUpdateTime(now);
@@ -78,6 +84,16 @@ public class TrainServiceImpl extends ServiceImpl<TrainMapper, Train> implements
         List<Train> trainList = trainMapper.selectList(trainWrapper);
 
         return BeanUtil.copyToList(trainList, TrainQueryResponse.class);
+    }
+
+    private Train getUnionTrain(String code) {
+        QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code", code);
+        List<Train> list = trainMapper.selectList(queryWrapper);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
     }
 
 }
