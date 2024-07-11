@@ -7,12 +7,14 @@
   </p>
   <a-table :dataSource="jobs"
            :columns="columns"
-           :pagination="pagination"
            @change="handleTableChange"
            :loading="loading">
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
         <a-space>
+          <a @click="onRun(record)" style="color: green">运行</a>
+          <a @click="onPause(record)" style="color: #000000">暂停</a>
+          <a @click="onResume(record)" style="color: sandybrown">重启</a>
           <a-popconfirm
               title="删除后不可恢复，确认删除?"
               @confirm="onDelete(record)"
@@ -24,17 +26,20 @@
       </template>
     </template>
   </a-table>
-  <a-modal v-model:visible="visible" title="定时任务" @ok="handleOk"
+  <a-modal v-model:open="open" title="定时任务" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="job" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
-      <a-form-item label="站名">
+      <a-form-item label="分组">
+        <a-input v-model:value="job.group" />
+      </a-form-item>
+      <a-form-item label="名称">
         <a-input v-model:value="job.name" />
       </a-form-item>
-      <a-form-item label="站名拼音">
-        <a-input v-model:value="job.namePinyin" disabled />
+      <a-form-item label="描述">
+        <a-input v-model:value="job.description" />
       </a-form-item>
-      <a-form-item label="拼音首字母">
-        <a-input v-model:value="job.namePy" disabled />
+      <a-form-item label="表达式">
+        <a-input v-model:value="job.cronExpression" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -44,28 +49,20 @@
 import {defineComponent, ref, onMounted, watch} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
-import {pinyin} from "pinyin-pro";
-
 export default defineComponent({
   name: "job",
   setup() {
-    const visible = ref(false);
+    const open = ref(false);
+    const update = ref(false);
+    const add = ref(false);
     let job = ref({
       group: undefined,
       name: undefined,
       description: undefined,
-      state: undefined,
       cronExpression: undefined,
-      nextFireTime: undefined,
-      preFireTime: undefined,
     });
     const jobs = ref([]);
-    // 分页的三个属性名是固定的
-    const pagination = ref({
-      total: 0,
-      current: 1,
-      pageSize: 10,
-    });
+
     let loading = ref(false);
     const columns = [
       {
@@ -84,31 +81,101 @@ export default defineComponent({
         key: 'description',
       },
       {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+      },
+      {
         title: 'corn表达式',
         dataIndex: 'cronExpression',
         key: 'cronExpression'
+      },
+      {
+        title: 'nextFireTime',
+        dataIndex: 'nextFireTime',
+        key: 'nextFireTime'
+      },
+      {
+        title: 'preFireTime',
+        dataIndex: 'preFireTime',
+        key: 'preFireTime'
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation'
       }
     ];
 
     const onAdd = () => {
       job.value = {};
-      visible.value = true;
+      open.value = true;
+      add.value = true;
+      update.value = false;
+    };
+
+    const onRun = (record) => {
+      axios.post("/timer/admin/job/run",{
+        name: record.name,
+        group: record.group
+      }).then((response) => {
+        const data = response.data;
+        if (data.code === 200) {
+          notification.success({description: "开启成功！"});
+          handleQuery();
+        } else {
+          notification.error({description: data.message});
+        }
+      });
+    };
+
+    const onResume = (record) => {
+      axios.post("/timer/admin/job/resume",{
+        name: record.name,
+        group: record.group
+      }).then((response) => {
+        const data = response.data;
+        if (data.code === 200) {
+          notification.success({description: "重启成功！"});
+          handleQuery();
+        } else {
+          notification.error({description: data.message});
+        }
+      });
+    };
+
+    const onPause = (record) => {
+      axios.post("/timer/admin/job/pause",
+        {
+          name: record.name,
+          group: record.group
+        }
+      ).then((response) => {
+        const data = response.data;
+        if (data.code === 200) {
+          notification.success({description: "暂停成功！"});
+          handleQuery();
+        } else {
+          notification.error({description: data.message});
+        }
+      });
     };
 
     const onEdit = (record) => {
       job.value = window.Tool.copy(record);
-      visible.value = true;
+      open.value = true;
+      update.value = true;
+      add.value = false;
     };
 
     const onDelete = (record) => {
-      axios.delete("/timer/admin/job/delete/" + record.id).then((response) => {
+      axios.post("/timer/admin/job/delete",{
+        name: record.name,
+        group: record.group
+      }).then((response) => {
         const data = response.data;
         if (data.code === 200) {
           notification.success({description: "删除成功！"});
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
+          handleQuery();
         } else {
           notification.error({description: data.message});
         }
@@ -116,38 +183,42 @@ export default defineComponent({
     };
 
     const handleOk = () => {
-      axios.post("/timer/admin/job/save", job.value).then((response) => {
-        let data = response.data;
-        if (data.code === 200) {
-          notification.success({description: "保存成功！"});
-          visible.value = false;
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          });
-        } else {
-          notification.error({description: data.message});
-        }
-      });
+      if (add.value === true) {
+        axios.post("/timer/admin/job/add", job.value).then((response) => {
+          let data = response.data;
+          if (data.code === 200) {
+            notification.success({description: "保存成功！"});
+            open.value = false;
+            add.value = false;
+            handleQuery();
+          } else {
+            notification.error({description: data.message});
+          }
+        });
+      }else if (update.value === true) {
+        axios.post("/timer/admin/job/reschedule", job.value).then((response) => {
+          let data = response.data;
+          if (data.code === 200) {
+            notification.success({description: "保存成功！"});
+            open.value = false;
+            update.value = false;
+            handleQuery();
+          } else {
+            notification.error({description: data.message});
+          }
+        });
+      }
     };
 
-    const handleQuery = (param) => {
-      if (!param) {
-        param = {
-          page: 1,
-          size: pagination.value.pageSize
-        };
-      }
+    const handleQuery = () => {
       loading.value = true;
       axios.get("/timer/admin/job/query", {
       }).then((response) => {
         loading.value = false;
         let data = response.data;
         if (data.code === 200) {
-          jobs.value = data.data.list;
-          // 设置分页控件的值
-          pagination.value.current = param.page;
-          pagination.value.total = data.data.total;
+          jobs.value = data.data;
+          console.log(jobs.value);
         } else {
           notification.error({description: data.message});
         }
@@ -166,9 +237,8 @@ export default defineComponent({
 
     return {
       job,
-      visible,
+      open,
       jobs,
-      pagination,
       columns,
       handleTableChange,
       handleQuery,
@@ -176,7 +246,10 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
+      onRun,
+      onPause,
+      onResume,
     };
   },
 });

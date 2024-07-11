@@ -10,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +18,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(value = "timer/admin/job")
+@RequestMapping(value = "/timer/admin/job")
 public class JobController {
 
     private static final Logger log = LoggerFactory.getLogger(JobController.class);
@@ -28,7 +26,7 @@ public class JobController {
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
-    @RequestMapping(value = "/run")
+    @PostMapping(value = "/run")
     public Result<Object> run(@RequestBody CronJobReq cronJobReq) throws SchedulerException {
         String jobClassName = cronJobReq.getName();
         String jobGroupName = cronJobReq.getGroup();
@@ -72,12 +70,16 @@ public class JobController {
             log.error("创建定时任务失败:" + e);
             result=false;
             message = "创建定时任务失败：任务类不存在";
+        } catch (Exception e) {
+            log.error("创建定时任务失败:" + "请检查传入参数");
+            result=false;
+            message = "创建定时任务失败" + "请检查传入参数";
         }
         log.info("创建定时任务结束：{}", result ? Result.success() : Result.fail(1000, message));
         return result ? Result.success() : Result.fail(1100, message);
     }
 
-    @RequestMapping(value = "/pause")
+    @PostMapping(value = "/pause")
     public Result<String> pause(@RequestBody CronJobReq cronJobReq) {
         String jobClassName = cronJobReq.getName();
         String jobGroupName = cronJobReq.getGroup();
@@ -96,7 +98,7 @@ public class JobController {
         return result ? Result.success() : Result.fail(1100, message);
     }
 
-    @RequestMapping(value = "/resume")
+    @PostMapping(value = "/resume")
     public Result<String> resume(@RequestBody CronJobReq cronJobReq) {
         String jobClassName = cronJobReq.getName();
         String jobGroupName = cronJobReq.getGroup();
@@ -115,7 +117,7 @@ public class JobController {
         return result ? Result.success() : Result.fail(1100, message);
     }
 
-    @RequestMapping(value = "/reschedule")
+    @PostMapping(value = "/reschedule")
     public Result<String> reschedule(@RequestBody CronJobReq cronJobReq) {
         String jobClassName = cronJobReq.getName();
         String jobGroupName = cronJobReq.getGroup();
@@ -147,7 +149,7 @@ public class JobController {
         return result ? Result.success() : Result.fail(1100, message);
     }
 
-    @RequestMapping(value = "/delete")
+    @PostMapping(value = "/delete")
     public Result<String> delete(@RequestBody CronJobReq cronJobReq) {
         String jobClassName = cronJobReq.getName();
         String jobGroupName = cronJobReq.getGroup();
