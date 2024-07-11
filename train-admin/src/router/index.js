@@ -2,14 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
-    path: '/',
     component: () => import('../views/main-page.vue'),
     meta: {
       loginRequired: true
     },
     children: [
       {
-        path: '/welcome',
+        path: '/',
         component: () => import('../views/main/welcome-page.vue')
       },
       {
@@ -31,6 +30,10 @@ const routes = [
       {
         path: '/train-seat',
         component: () => import('../views/main/train-seat.vue')
+      },
+      {
+        path: '/timer/job',
+        component: () => import('../views/main/timer/job.vue')
       },
     ]
   }

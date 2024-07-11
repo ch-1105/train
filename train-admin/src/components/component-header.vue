@@ -4,9 +4,9 @@
 
 <template>
   <a-layout-header class="component-header" id="components-layout-demo-top-side" >
-    <div class="logo" />
+    <div class="logo" >管理控制台</div>
     <div>
-      管理控制台
+
     </div>
     <div style="float:right;color:white;">
       您好: admin &nbsp; &nbsp;
@@ -86,8 +86,7 @@ export default defineComponent({
   float: left;
   width: 120px;
   height: 31px;
-  margin: 16px 24px 16px 0;
-  background: rgba(255, 255, 255, 0.3);
+  color: white;
 }
 
 .ant-row-rtl #components-layout-demo-top-side .logo {

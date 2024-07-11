@@ -5,7 +5,7 @@
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
-  <a-table :dataSource="stations"
+  <a-table :dataSource="jobs"
            :columns="columns"
            :pagination="pagination"
            @change="handleTableChange"
@@ -24,17 +24,17 @@
       </template>
     </template>
   </a-table>
-  <a-modal v-model:open="open" title="车站" @ok="handleOk"
+  <a-modal v-model:visible="visible" title="定时任务" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
-    <a-form :model="station" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
+    <a-form :model="job" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="站名">
-        <a-input v-model:value="station.name" />
+        <a-input v-model:value="job.name" />
       </a-form-item>
       <a-form-item label="站名拼音">
-        <a-input v-model:value="station.namePinyin" disabled />
+        <a-input v-model:value="job.namePinyin" disabled />
       </a-form-item>
       <a-form-item label="拼音首字母">
-        <a-input v-model:value="station.namePy" disabled />
+        <a-input v-model:value="job.namePy" disabled />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -47,18 +47,19 @@ import axios from "axios";
 import {pinyin} from "pinyin-pro";
 
 export default defineComponent({
-  name: "station-view",
+  name: "job",
   setup() {
-    const open = ref(false);
-    let station = ref({
-      id: undefined,
+    const visible = ref(false);
+    let job = ref({
+      group: undefined,
       name: undefined,
-      namePinyin: undefined,
-      namePy: undefined,
-      createTime: undefined,
-      updateTime: undefined,
+      description: undefined,
+      state: undefined,
+      cronExpression: undefined,
+      nextFireTime: undefined,
+      preFireTime: undefined,
     });
-    const stations = ref([]);
+    const jobs = ref([]);
     // 分页的三个属性名是固定的
     const pagination = ref({
       total: 0,
@@ -67,39 +68,40 @@ export default defineComponent({
     });
     let loading = ref(false);
     const columns = [
-    {
-      title: '站名',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '站名拼音',
-      dataIndex: 'namePinyin',
-      key: 'namePinyin',
-    },
-    {
-      title: '站名拼音首字母',
-      dataIndex: 'namePy',
-      key: 'namePy',
-    },
-    {
-      title: '操作',
-      dataIndex: 'operation'
-    }
+      {
+        title: '定时任务组别',
+        dataIndex: 'group',
+        key: 'group',
+      },
+      {
+        title: '定时任务名称',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: '描述',
+        dataIndex: 'description',
+        key: 'description',
+      },
+      {
+        title: 'corn表达式',
+        dataIndex: 'cronExpression',
+        key: 'cronExpression'
+      }
     ];
 
     const onAdd = () => {
-      station.value = {};
-      open.value = true;
+      job.value = {};
+      visible.value = true;
     };
 
     const onEdit = (record) => {
-      station.value = window.Tool.copy(record);
-      open.value = true;
+      job.value = window.Tool.copy(record);
+      visible.value = true;
     };
 
     const onDelete = (record) => {
-      axios.delete("/business/admin/station/delete/" + record.id).then((response) => {
+      axios.delete("/timer/admin/job/delete/" + record.id).then((response) => {
         const data = response.data;
         if (data.code === 200) {
           notification.success({description: "删除成功！"});
@@ -114,11 +116,11 @@ export default defineComponent({
     };
 
     const handleOk = () => {
-      axios.post("/business/admin/station/save", station.value).then((response) => {
+      axios.post("/timer/admin/job/save", job.value).then((response) => {
         let data = response.data;
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
-          open.value = false;
+          visible.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -137,16 +139,12 @@ export default defineComponent({
         };
       }
       loading.value = true;
-      axios.get("/business/admin/station/query-list", {
-        params: {
-          pageNum: param.page,
-          pageSize: param.size
-        }
+      axios.get("/timer/admin/job/query", {
       }).then((response) => {
         loading.value = false;
         let data = response.data;
         if (data.code === 200) {
-          stations.value = data.data.list;
+          jobs.value = data.data.list;
           // 设置分页控件的值
           pagination.value.current = param.page;
           pagination.value.total = data.data.total;
@@ -156,37 +154,20 @@ export default defineComponent({
       });
     };
 
-    const handleTableChange = (page) => {
-      // console.log("看看自带的分页参数都有啥：" + JSON.stringify(page));
-      pagination.value.pageSize = page.pageSize;
+    const handleTableChange = () => {
       handleQuery({
-        page: page.current,
-        size: page.pageSize
       });
     };
 
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });
+      handleQuery();
     });
 
-    // http://pinyin-pro.cn/
-    watch(() => station.value.name, ()=>{
-      if (Tool.isNotEmpty(station.value.name)) {
-        station.value.namePinyin = pinyin(station.value.name, { toneType: 'none'}).replaceAll(" ", "");
-        station.value.namePy = pinyin(station.value.name, { pattern: 'first', toneType: 'none'}).replaceAll(" ", "");
-      } else {
-        station.value.namePinyin = "";
-        station.value.namePy = "";
-      }
-    }, {immediate: true});
 
     return {
-      station,
-      open,
-      stations,
+      job,
+      visible,
+      jobs,
       pagination,
       columns,
       handleTableChange,

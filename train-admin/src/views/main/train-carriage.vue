@@ -31,7 +31,7 @@
       </template>
     </template>
   </a-table>
-  <a-modal v-model:visible="visible" title="火车车厢" @ok="handleOk"
+  <a-modal v-model:open="open" title="火车车厢" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="trainCarriage" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
@@ -71,7 +71,7 @@ export default defineComponent({
   components: {TrainSelect},
   setup() {
     const SEAT_TYPE = window.SEAT_TYPE;
-    const visible = ref(false);
+    const open = ref(false);
     let trainCarriage = ref({
       id: undefined,
       trainCode: undefined,
@@ -130,12 +130,12 @@ export default defineComponent({
 
     const onAdd = () => {
       trainCarriage.value = {};
-      visible.value = true;
+      open.value = true;
     };
 
     const onEdit = (record) => {
       trainCarriage.value = window.Tool.copy(record);
-      visible.value = true;
+      open.value = true;
     };
 
     const onDelete = (record) => {
@@ -158,7 +158,7 @@ export default defineComponent({
         let data = response.data;
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
-          visible.value = false;
+          open.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -215,7 +215,7 @@ export default defineComponent({
     return {
       SEAT_TYPE,
       trainCarriage,
-      visible,
+      open,
       trainCarriages,
       pagination,
       columns,
