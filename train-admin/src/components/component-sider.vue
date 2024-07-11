@@ -13,7 +13,7 @@
         <template #title>
                 <span>
                   <user-outlined />
-                  subnav 1
+                  数据展示
                 </span>
         </template>
         <a-menu-item key="/">

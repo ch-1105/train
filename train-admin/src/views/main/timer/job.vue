@@ -12,9 +12,9 @@
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
         <a-space>
-          <a @click="onRun(record)" style="color: green">运行</a>
-          <a @click="onPause(record)" style="color: #000000">暂停</a>
-          <a @click="onResume(record)" style="color: sandybrown">重启</a>
+          <a @click="onRun(record)" style="color: green" >运行</a>
+          <a @click="onPause(record)" style="color: #000000" v-if="record.state === 'PAUSE'">暂停</a>
+          <a @click="onResume(record)" style="color: sandybrown" v-else >重启</a>
           <a-popconfirm
               title="删除后不可恢复，确认删除?"
               @confirm="onDelete(record)"
@@ -111,6 +111,9 @@ export default defineComponent({
       open.value = true;
       add.value = true;
       update.value = false;
+      job.value.group = "DEFAULT";
+      job.value.name = "com.ch.train.timer.job.QuartzJob";
+      job.value.cronExpression = "*/9 * * * * ?"
     };
 
     const onRun = (record) => {
