@@ -15,6 +15,11 @@ spring:
             - Path=/member/** # 路径谓词，匹配/users开头的请求
 #          filters:
 #            - RewritePath=/users/(?<segment>.*)/, /$\{segment} # 重写路径，去除/users前缀
+        - id: timer
+          uri: http://localhost:8099
+          predicates:
+            - Path=/timer/**
+      # 全局过滤器
       globalcors:
         cors-configurations:
           '[/**]':

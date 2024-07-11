@@ -1,0 +1,9 @@
+server:
+  port: 8099
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/train_business?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: train_business
+    password: business
+    driver-class-name: com.mysql.cj.jdbc.Driver
