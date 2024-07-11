@@ -12,25 +12,31 @@ const routes = [
         component: () => import('../views/main/welcome-page.vue')
       },
       {
-        path: '/station',
-        component: () => import('../views/main/station.vue')
-      },
-      {
         path: '/train',
-        component: () => import('../views/main/train.vue')
+        children: [
+          {
+            path: '/station',
+            component: () => import('../views/main/train/station.vue')
+          },
+          {
+            path: '/train',
+            component: () => import('../views/main/train/train.vue')
+          },
+          {
+            path: '/train-station',
+            component: () => import('../views/main/train/train-station.vue')
+          },
+          {
+            path: '/train-carriage',
+            component: () => import('../views/main/train/train-carriage.vue')
+          },
+          {
+            path: '/train-seat',
+            component: () => import('../views/main/train/train-seat.vue')
+          },
+        ]
       },
-      {
-        path: '/train-station',
-        component: () => import('../views/main/train-station.vue')
-      },
-      {
-        path: '/train-carriage',
-        component: () => import('../views/main/train-carriage.vue')
-      },
-      {
-        path: '/train-seat',
-        component: () => import('../views/main/train-seat.vue')
-      },
+
       {
         path: '/timer/job',
         component: () => import('../views/main/timer/job.vue')

@@ -6,47 +6,49 @@
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
         v-model:selectedKeys="selectedKeys"
+        :openKeys="['train']"
         mode="inline"
         style="height: 100%"
     >
-      <a-sub-menu key="sub1">
-        <template #title>
-                <span>
-                  <user-outlined />
-                  数据展示
-                </span>
-        </template>
         <a-menu-item key="/">
           <router-link to="/">
             welcome
           </router-link>
           </a-menu-item>
-        <a-menu-item key="/station">
-          <router-link to="/station">
-            站点管理
-          </router-link>
-        </a-menu-item>
-        <a-menu-item key="/train">
-          <router-link to="/train">
-            火车管理
-          </router-link>
-        </a-menu-item>
-        <a-menu-item key="/train-station">
-          <router-link to="/train-station">
-            火车车站
-          </router-link>
-        </a-menu-item>
-        <a-menu-item key="/train-carriage">
-          <router-link to="/train-carriage">
-            车厢管理
-          </router-link>
-        </a-menu-item>
-        <a-menu-item key="/train-seat">
-          <router-link to="/train-seat">
-            座位管理
-          </router-link>
-        </a-menu-item>
-      </a-sub-menu>
+        <a-sub-menu key="train">
+          <template #title>
+                <span>
+                  <user-outlined />
+                  数据管理
+                </span>
+          </template>
+          <a-menu-item key="/station">
+            <router-link to="/station">
+              站点管理
+            </router-link>
+          </a-menu-item>
+          <a-menu-item key="/train">
+            <router-link to="/train">
+              火车管理
+            </router-link>
+          </a-menu-item>
+          <a-menu-item key="/train-station">
+            <router-link to="/train-station">
+              火车车站
+            </router-link>
+          </a-menu-item>
+          <a-menu-item key="/train-carriage">
+            <router-link to="/train-carriage">
+              车厢管理
+            </router-link>
+          </a-menu-item>
+          <a-menu-item key="/train-seat">
+            <router-link to="/train-seat">
+              座位管理
+            </router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
     </a-menu>
   </a-layout-sider>
 </template>
