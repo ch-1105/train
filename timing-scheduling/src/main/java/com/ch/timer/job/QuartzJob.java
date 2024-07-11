@@ -1,5 +1,6 @@
 package com.ch.timer.job;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -10,6 +11,7 @@ import org.quartz.JobExecutionException;
  * Description:
  * @author ch051
  */
+@DisallowConcurrentExecution // 禁止并发执行
 public class QuartzJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
