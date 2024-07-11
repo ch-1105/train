@@ -1,4 +1,4 @@
-package com.ch.timer.job;
+package com.ch.train.timer.job;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.ch.timer.job;
+package com.ch.train.timer.job;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;

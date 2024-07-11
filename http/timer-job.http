@@ -1,0 +1,66 @@
+###
+POST http://localhost:8000/timer/admin/job/add
+Content-Type: application/json
+
+{
+  "name": "com.ch.train.timer.job.QuartzJob",
+  "jobGroupName": "default",
+  "cronExpression": "*/20 * * * * ?",
+  "desc": "test job"
+}
+
+###
+
+GET http://localhost:8000/timer/admin/job/query
+
+###
+
+POST http://localhost:8000/timer/admin/job/pause
+Content-Type: application/json
+
+{
+  "name": "com.ch.train.timer.job.QuartzJob",
+  "jobGroupName": "default"
+}
+
+###
+
+POST http://localhost:8000/timer/admin/job/resume
+Content-Type: application/json
+
+{
+  "name": "com.ch.train.timer.job.QuartzJob",
+  "jobGroupName": "default"
+}
+
+###
+
+POST http://localhost:8000/timer/admin/job/reschedule
+Content-Type: application/json
+
+{
+  "name": "com.ch.train.timer.job.QuartzJob",
+  "jobGroupName": "default",
+  "cronExpression": "*/50 * * * * ?",
+  "desc": "test job"
+}
+
+###
+
+POST http://localhost:8000/timer/admin/job/delete
+Content-Type: application/json
+
+{
+  "name": "com.ch.train.timer.job.QuartzJob",
+  "jobGroupName": "default"
+}
+
+###
+
+POST http://localhost:8000/timer/admin/job/run
+Content-Type: application/json
+
+{
+  "name": "com.ch.train.timer.job.DailyTrainJob",
+  "jobGroupName": "default"
+}

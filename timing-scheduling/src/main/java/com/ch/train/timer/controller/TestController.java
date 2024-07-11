@@ -1,4 +1,4 @@
-package com.ch.timer.controller;
+package com.ch.train.timer.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
