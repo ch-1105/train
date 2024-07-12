@@ -4,12 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 
 @ComponentScan(basePackages = "com.ch")
 @SpringBootApplication
+//@MapperScan(basePackages = "com.ch")
+@EnableFeignClients(basePackages = "com.ch.train.timer.feign")
 public class TimingSchedulingApplication {
     static Logger logger = LoggerFactory.getLogger(TimingSchedulingApplication.class);
     public static void main(String[] args) {
