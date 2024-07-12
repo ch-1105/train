@@ -13,7 +13,7 @@
       <template v-if="column.dataIndex === 'operation'">
         <a-space>
           <a @click="onRun(record)" style="color: green" >运行</a>
-          <a @click="onPause(record)" style="color: #000000" v-if="record.state === 'PAUSE'">暂停</a>
+          <a @click="onPause(record)" style="color: #000000" v-if="record.state !== 'PAUSE'">暂停</a>
           <a @click="onResume(record)" style="color: sandybrown" v-else >重启</a>
           <a-popconfirm
               title="删除后不可恢复，确认删除?"
