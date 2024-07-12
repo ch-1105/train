@@ -6,7 +6,7 @@
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
         v-model:selectedKeys="selectedKeys"
-        :openKeys="['train']"
+        :openKeys="['train','daily']"
         mode="inline"
         style="height: 100%"
     >
@@ -49,6 +49,44 @@
           </a-menu-item>
         </a-sub-menu>
 
+      <a-sub-menu key="daily">
+        <template #title>
+                <span>
+                  <user-outlined />
+                  每日管理
+                </span>
+        </template>
+        <a-menu-item key="/daily-train">
+          <router-link to="/daily-train">
+            站点管理
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/daily-train-carriage">
+          <router-link to="/daily-train-carriage">
+            火车管理
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/daily-train-seat">
+          <router-link to="/daily-train-seat">
+            火车车站
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/daily-train-station">
+          <router-link to="/daily-train-station">
+            每日站点
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/sk-token">
+          <router-link to="/sk-token">
+            sk-token
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/confirm-order">
+          <router-link to="/confirm-order">
+            confirm-order
+          </router-link>
+        </a-menu-item>
+      </a-sub-menu>
     </a-menu>
   </a-layout-sider>
 </template>
