@@ -1,11 +1,12 @@
 package com.ch.train.business.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.math.BigDecimal;
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 public class DailyTrainStationQueryResponse {
@@ -30,7 +31,7 @@ public class DailyTrainStationQueryResponse {
     /**
      * 站序|第一站是0
      */
-    private Integer index;
+    private Integer stationIndex;
 
     /**
      * 站名

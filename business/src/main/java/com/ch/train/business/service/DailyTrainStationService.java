@@ -8,6 +8,8 @@ import com.ch.train.business.response.DailyTrainStationQueryResponse;
 
 import com.ch.train.common.response.PageResponse;
 
+import java.util.Date;
+
 public interface DailyTrainStationService extends IService<DailyTrainStation>{
 
     void save(DailyTrainStationSaveRequest request);
@@ -15,4 +17,6 @@ public interface DailyTrainStationService extends IService<DailyTrainStation>{
     PageResponse<DailyTrainStationQueryResponse> queryList(DailyTrainStationQueryRequest request);
 
     void delete(Long id);
+
+    void generateDailyTrainCode(Date date, String trainCode);
 }

@@ -3,25 +3,27 @@ package com.ch.train.business.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.ch.train.business.domain.Train;
-import com.ch.train.business.service.TrainService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.ch.train.common.response.PageResponse;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.train.business.domain.DailyTrain;
+import com.ch.train.business.domain.Train;
 import com.ch.train.business.mapper.DailyTrainMapper;
-import com.ch.train.business.service.DailyTrainService;
 import com.ch.train.business.request.DailyTrainQueryRequest;
 import com.ch.train.business.request.DailyTrainSaveRequest;
 import com.ch.train.business.response.DailyTrainQueryResponse;
+import com.ch.train.business.service.DailyTrainService;
+import com.ch.train.business.service.DailyTrainStationService;
+import com.ch.train.business.service.TrainService;
+import com.ch.train.common.response.PageResponse;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +37,8 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
 
     @Resource
     private TrainService trainService;
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
 
     @Override
     public void save(DailyTrainSaveRequest request) {
@@ -104,6 +108,7 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
     }
 
     public void generateDailyTrain(Date date,Train train) {
+        log.info("生成日期【{}】车次【{}】的信息开始", DateUtil.formatDate(date), train.getCode());
         DateTime now = DateTime.now();
         //先删除车次
         QueryWrapper<DailyTrain> wrapper = new QueryWrapper<>();
@@ -118,6 +123,9 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
         dailyTrain.setUpdateTime(now);
         dailyTrain.setDate(date);
         dailyTrainMapper.insert(dailyTrain);
+        dailyTrainStationService.generateDailyTrainCode(date,dailyTrain.getCode());
+        log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
+
     }
 
 }

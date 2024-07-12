@@ -63,7 +63,7 @@
         </a-menu-item>
         <a-menu-item key="/daily-train-station">
           <router-link to="/daily-train-station">
-            每日站点
+            每日火车站点
           </router-link>
         </a-menu-item>
         <a-menu-item key="/daily-train-carriage">

@@ -8,6 +8,8 @@ import com.ch.train.business.response.TrainStationQueryResponse;
 
 import com.ch.train.common.response.PageResponse;
 
+import java.util.List;
+
 public interface TrainStationService extends IService<TrainStation>{
 
     void save(TrainStationSaveRequest request);
@@ -15,4 +17,6 @@ public interface TrainStationService extends IService<TrainStation>{
     PageResponse<TrainStationQueryResponse> queryList(TrainStationQueryRequest request);
 
     void delete(Long id);
+
+    List<TrainStation> getTrainStations(String trainCode);
 }

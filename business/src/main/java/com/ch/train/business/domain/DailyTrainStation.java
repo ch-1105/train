@@ -1,13 +1,13 @@
 package com.ch.train.business.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 每日车站
@@ -37,8 +37,8 @@ public class DailyTrainStation implements Serializable {
     /**
      * 站序|第一站是0
      */
-    @TableField(value = "index")
-    private Integer index;
+    @TableField(value = "station_index")
+    private Integer stationIndex;
 
     /**
      * 站名

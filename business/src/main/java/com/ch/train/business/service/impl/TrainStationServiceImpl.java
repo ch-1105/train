@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.ch.train.business.domain.Station;
 import com.ch.train.common.utils.GlobalException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -27,7 +26,7 @@ import java.util.List;
 @Service
 public class TrainStationServiceImpl extends ServiceImpl<TrainStationMapper, TrainStation> implements TrainStationService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TrainStationService.class);
+    private static final Logger log = LoggerFactory.getLogger(TrainStationService.class);
 
     @Resource
     private TrainStationMapper trainStationMapper;
@@ -58,14 +57,14 @@ public class TrainStationServiceImpl extends ServiceImpl<TrainStationMapper, Tra
         QueryWrapper<TrainStation> trainStationWrapper = new QueryWrapper<>();
         trainStationWrapper.orderByDesc("id");
 
-        LOG.info("查询页码：{}", request.getPageNum());
-        LOG.info("每页条数：{}", request.getPageSize());
+        log.info("查询页码：{}", request.getPageNum());
+        log.info("每页条数：{}", request.getPageSize());
         PageHelper.startPage(request.getPageNum(), request.getPageSize());
         List<TrainStation> trainStationList = trainStationMapper.selectList(trainStationWrapper);
 
         PageInfo<TrainStation> pageInfo = new PageInfo<>(trainStationList);
-        LOG.info("总行数：{}", pageInfo.getTotal());
-        LOG.info("总页数：{}", pageInfo.getPages());
+        log.info("总行数：{}", pageInfo.getTotal());
+        log.info("总页数：{}", pageInfo.getPages());
 
         List<TrainStationQueryResponse> list = BeanUtil.copyToList(trainStationList, TrainStationQueryResponse.class);
 
@@ -99,5 +98,13 @@ public class TrainStationServiceImpl extends ServiceImpl<TrainStationMapper, Tra
             return null;
         }
         return list.get(0);
+    }
+
+    @Override
+    public List<TrainStation> getTrainStations(String trainCode) {
+        QueryWrapper<TrainStation> wrapper = new QueryWrapper<>();
+        wrapper.orderByAsc("station_index");
+        wrapper.eq("train_code", trainCode);
+        return trainStationMapper.selectList(wrapper);
     }
 }

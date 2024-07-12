@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class ${Domain}ServiceImpl extends ServiceImpl<${Domain}Mapper, ${Domain}> implements ${Domain}Service {
 
-    private static final Logger LOG = LoggerFactory.getLogger(${Domain}Service.class);
+    private static final Logger log = LoggerFactory.getLogger(${Domain}Service.class);
 
     @Resource
     private ${Domain}Mapper ${domain}Mapper;
@@ -49,14 +49,14 @@ public class ${Domain}ServiceImpl extends ServiceImpl<${Domain}Mapper, ${Domain}
         QueryWrapper<${Domain}> ${domain}Wrapper = new QueryWrapper<>();
         ${domain}Wrapper.orderByDesc("id");
 
-        LOG.info("查询页码：{}", request.getPageNum());
-        LOG.info("每页条数：{}", request.getPageSize());
+        log.info("查询页码：{}", request.getPageNum());
+        log.info("每页条数：{}", request.getPageSize());
         PageHelper.startPage(request.getPageNum(), request.getPageSize());
         List<${Domain}> ${domain}List = ${domain}Mapper.selectList(${domain}Wrapper);
 
         PageInfo<${Domain}> pageInfo = new PageInfo<>(${domain}List);
-        LOG.info("总行数：{}", pageInfo.getTotal());
-        LOG.info("总页数：{}", pageInfo.getPages());
+        log.info("总行数：{}", pageInfo.getTotal());
+        log.info("总页数：{}", pageInfo.getPages());
 
         List<${Domain}QueryResponse> list = BeanUtil.copyToList(${domain}List, ${Domain}QueryResponse.class);
 
