@@ -38,7 +38,7 @@
         <a-date-picker v-model:value="dailyTrain.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
       </a-form-item>
       <a-form-item label="车次编号">
-        <a-input v-model:value="dailyTrain.code" />
+        <train-select v-model="dailyTrain.code" @change="onChange" />
       </a-form-item>
       <a-form-item label="车次类型">
         <a-select v-model:value="dailyTrain.type">
@@ -73,9 +73,11 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import TrainSelect from "@/components/train-select.vue";
 
 export default defineComponent({
   name: "daily-train-view",
+  components: {TrainSelect},
   setup() {
     const TRAIN_TYPE = window.TRAIN_TYPE;
     const visible = ref(false);
@@ -181,6 +183,8 @@ export default defineComponent({
     const handleOk = () => {
       axios.post("/business/admin/daily-train/save", dailyTrain.value).then((response) => {
         let data = response.data;
+        console.log("打印code :　"+ data.code);
+
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
           visible.value = false;
@@ -189,6 +193,7 @@ export default defineComponent({
             size: pagination.value.pageSize
           });
         } else {
+          console.log("失败 :　"+ data.message);
           notification.error({description: data.message});
         }
       });
@@ -237,6 +242,12 @@ export default defineComponent({
       });
     });
 
+    const onChange=(train)=>{
+      let t = Tool.copy(train);
+      delete t.id;
+      dailyTrain.value = Object.assign(dailyTrain.value, t);
+    }
+
     return {
       TRAIN_TYPE,
       dailyTrain,
@@ -250,7 +261,8 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
+      onChange
     };
   },
 });
