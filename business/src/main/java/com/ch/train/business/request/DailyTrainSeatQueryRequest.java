@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 public class DailyTrainSeatQueryRequest extends PageRequest {
-    private String code;
+    private String trainCode;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;

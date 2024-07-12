@@ -1,12 +1,12 @@
 package com.ch.train.business.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 每日座位
@@ -42,7 +42,7 @@ public class DailyTrainSeat implements Serializable {
     /**
      * 排号|01, 02
      */
-    @TableField(value = "row")
+    @TableField(value = "`row`")
     private String row;
 
     /**

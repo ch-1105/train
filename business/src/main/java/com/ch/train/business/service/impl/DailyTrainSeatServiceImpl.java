@@ -47,8 +47,11 @@ public class DailyTrainSeatServiceImpl extends ServiceImpl<DailyTrainSeatMapper,
     @Override
     public PageResponse<DailyTrainSeatQueryResponse> queryList(DailyTrainSeatQueryRequest request) {
         QueryWrapper<DailyTrainSeat> dailyTrainSeatWrapper = new QueryWrapper<>();
-        dailyTrainSeatWrapper.orderByDesc("id");
-
+        dailyTrainSeatWrapper.orderByAsc("train_code");
+        // 查询条件 按车次查询
+        if (ObjectUtil.isNotNull(request.getTrainCode())) {
+            dailyTrainSeatWrapper.eq("train_code", request.getTrainCode());
+        }
         LOG.info("查询页码：{}", request.getPageNum());
         LOG.info("每页条数：{}", request.getPageSize());
         PageHelper.startPage(request.getPageNum(), request.getPageSize());

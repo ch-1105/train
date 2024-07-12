@@ -1,6 +1,8 @@
 <template>
   <p>
     <a-space>
+      <train-select v-model:value="params.trainCode" width="200px"/>
+      <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
@@ -24,7 +26,7 @@
       </template>
       <template v-else-if="column.dataIndex === 'col'">
         <span v-for="item in SEAT_COL" :key="item.key">
-          <span v-if="item.key === record.col">
+          <span v-if="item.key === record.col && item.type === record.seatType">
             {{item.value}}
           </span>
         </span>
@@ -81,13 +83,18 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import TrainSelect from "@/components/train-select.vue";
 
 export default defineComponent({
   name: "daily-train-seat-view",
+  components: {TrainSelect},
   setup() {
-    const SEAT_COL = window.SEAT_COL;
+    const  SEAT_COL = window.SEAT_COL;
     const SEAT_TYPE = window.SEAT_TYPE;
     const open = ref(false);
+    const params = ref({
+      trainCode: null,
+    });
     let dailyTrainSeat = ref({
       id: undefined,
       date: undefined,
@@ -201,14 +208,15 @@ export default defineComponent({
       if (!param) {
         param = {
           page: 1,
-          size: pagination.value.pageSize
+          size: pagination.value.pageSize,
         };
       }
       loading.value = true;
       axios.get("/business/admin/daily-train-seat/query-list", {
         params: {
           pageNum: param.page,
-          pageSize: param.size
+          pageSize: param.size,
+          trainCode: params.value.trainCode
         }
       }).then((response) => {
         loading.value = false;
@@ -254,7 +262,8 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
+      params
     };
   },
 });
