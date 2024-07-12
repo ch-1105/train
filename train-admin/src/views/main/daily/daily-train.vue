@@ -1,8 +1,12 @@
 <template>
   <p>
     <a-space>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <train-select v-model:value="params.code" width="200px"/>
+      <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
+
     </a-space>
   </p>
   <a-table :dataSource="dailyTrains"
@@ -31,7 +35,7 @@
       </template>
     </template>
   </a-table>
-  <a-modal v-model:visible="visible" title="每日车次" @ok="handleOk"
+  <a-modal v-model:open="open" title="每日车次" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="dailyTrain" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="日期">
@@ -80,7 +84,11 @@ export default defineComponent({
   components: {TrainSelect},
   setup() {
     const TRAIN_TYPE = window.TRAIN_TYPE;
-    const visible = ref(false);
+    const open = ref(false);
+    const params = ref({
+      date: null,
+      code: null,
+    });
     let dailyTrain = ref({
       id: undefined,
       date: undefined,
@@ -157,12 +165,12 @@ export default defineComponent({
 
     const onAdd = () => {
       dailyTrain.value = {};
-      visible.value = true;
+      open.value = true;
     };
 
     const onEdit = (record) => {
       dailyTrain.value = window.Tool.copy(record);
-      visible.value = true;
+      open.value = true;
     };
 
     const onDelete = (record) => {
@@ -187,7 +195,7 @@ export default defineComponent({
 
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
-          visible.value = false;
+          open.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -210,7 +218,9 @@ export default defineComponent({
       axios.get("/business/admin/daily-train/query-list", {
         params: {
           pageNum: param.page,
-          pageSize: param.size
+          pageSize: param.size,
+          date: params.value.date,
+          code: params.value.code,
         }
       }).then((response) => {
         loading.value = false;
@@ -251,7 +261,7 @@ export default defineComponent({
     return {
       TRAIN_TYPE,
       dailyTrain,
-      visible,
+      open,
       dailyTrains,
       pagination,
       columns,
@@ -262,7 +272,8 @@ export default defineComponent({
       handleOk,
       onEdit,
       onDelete,
-      onChange
+      onChange,
+      params
     };
   },
 });

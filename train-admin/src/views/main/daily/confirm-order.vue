@@ -31,7 +31,7 @@
       </template>
     </template>
   </a-table>
-  <a-modal v-model:visible="visible" title="确认订单" @ok="handleOk"
+  <a-modal v-model:open="open" title="确认订单" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="confirmOrder" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="会员id">
@@ -75,7 +75,7 @@ export default defineComponent({
   name: "confirm-order-view",
   setup() {
     const CONFIRM_ORDER_STATUS = window.CONFIRM_ORDER_STATUS;
-    const visible = ref(false);
+    const open = ref(false);
     let confirmOrder = ref({
       id: undefined,
       memberId: undefined,
@@ -146,12 +146,12 @@ export default defineComponent({
 
     const onAdd = () => {
       confirmOrder.value = {};
-      visible.value = true;
+      open.value = true;
     };
 
     const onEdit = (record) => {
       confirmOrder.value = window.Tool.copy(record);
-      visible.value = true;
+      open.value = true;
     };
 
     const onDelete = (record) => {
@@ -174,7 +174,7 @@ export default defineComponent({
         let data = response.data;
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
-          visible.value = false;
+          open.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -231,7 +231,7 @@ export default defineComponent({
     return {
       CONFIRM_ORDER_STATUS,
       confirmOrder,
-      visible,
+      open,
       confirmOrders,
       pagination,
       columns,

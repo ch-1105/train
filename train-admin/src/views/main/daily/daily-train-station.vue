@@ -24,7 +24,7 @@
       </template>
     </template>
   </a-table>
-  <a-modal v-model:visible="visible" title="每日车站" @ok="handleOk"
+  <a-modal v-model:open="open" title="每日车站" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="dailyTrainStation" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="日期">
@@ -66,7 +66,7 @@ import axios from "axios";
 export default defineComponent({
   name: "daily-train-station-view",
   setup() {
-    const visible = ref(false);
+    const open = ref(false);
     let dailyTrainStation = ref({
       id: undefined,
       date: undefined,
@@ -143,12 +143,12 @@ export default defineComponent({
 
     const onAdd = () => {
       dailyTrainStation.value = {};
-      visible.value = true;
+      open.value = true;
     };
 
     const onEdit = (record) => {
       dailyTrainStation.value = window.Tool.copy(record);
-      visible.value = true;
+      open.value = true;
     };
 
     const onDelete = (record) => {
@@ -171,7 +171,7 @@ export default defineComponent({
         let data = response.data;
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
-          visible.value = false;
+          open.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -227,7 +227,7 @@ export default defineComponent({
 
     return {
       dailyTrainStation,
-      visible,
+      open,
       dailyTrainStations,
       pagination,
       columns,

@@ -38,7 +38,7 @@
     </template>
   </a-table>
   <#if !readOnly>
-  <a-modal v-model:visible="visible" title="${tableNameCn}" @ok="handleOk"
+  <a-modal v-model:open="open" title="${tableNameCn}" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="${domain}" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <#list fieldList as field>
@@ -82,7 +82,7 @@ export default defineComponent({
     const ${field.enumsConst} = window.${field.enumsConst};
     </#if>
     </#list>
-    const visible = ref(false);
+    const open = ref(false);
     let ${domain} = ref({
       <#list fieldList as field>
       ${field.nameHump}: undefined,
@@ -117,12 +117,12 @@ export default defineComponent({
     <#if !readOnly>
     const onAdd = () => {
       ${domain}.value = {};
-      visible.value = true;
+      open.value = true;
     };
 
     const onEdit = (record) => {
       ${domain}.value = window.Tool.copy(record);
-      visible.value = true;
+      open.value = true;
     };
 
     const onDelete = (record) => {
@@ -145,7 +145,7 @@ export default defineComponent({
         let data = response.data;
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
-          visible.value = false;
+          open.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -207,7 +207,7 @@ export default defineComponent({
       </#if>
       </#list>
       ${domain},
-      visible,
+      open,
       ${domain}s,
       pagination,
       columns,

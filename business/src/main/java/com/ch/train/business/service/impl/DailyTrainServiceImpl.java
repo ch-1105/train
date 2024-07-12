@@ -47,7 +47,16 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
     @Override
     public PageResponse<DailyTrainQueryResponse> queryList(DailyTrainQueryRequest request) {
         QueryWrapper<DailyTrain> dailyTrainWrapper = new QueryWrapper<>();
-        dailyTrainWrapper.orderByDesc("id");
+        dailyTrainWrapper.orderByDesc("date");
+        dailyTrainWrapper.orderByAsc("code");
+
+        // 查询条件 按日期 或 车次查询
+        if (ObjectUtil.isNotNull(request.getDate())) {
+            dailyTrainWrapper.eq("date", request.getDate());
+        }
+        if (ObjectUtil.isNotEmpty(request.getCode())) {
+            dailyTrainWrapper.eq("code", request.getCode());
+        }
 
         LOG.info("查询页码：{}", request.getPageNum());
         LOG.info("每页条数：{}", request.getPageSize());

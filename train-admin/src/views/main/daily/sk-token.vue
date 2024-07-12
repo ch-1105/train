@@ -24,7 +24,7 @@
       </template>
     </template>
   </a-table>
-  <a-modal v-model:visible="visible" title="秒杀令牌" @ok="handleOk"
+  <a-modal v-model:open="open" title="秒杀令牌" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="skToken" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="日期">
@@ -48,7 +48,7 @@ import axios from "axios";
 export default defineComponent({
   name: "sk-token-view",
   setup() {
-    const visible = ref(false);
+    const open = ref(false);
     let skToken = ref({
       id: undefined,
       date: undefined,
@@ -89,12 +89,12 @@ export default defineComponent({
 
     const onAdd = () => {
       skToken.value = {};
-      visible.value = true;
+      open.value = true;
     };
 
     const onEdit = (record) => {
       skToken.value = window.Tool.copy(record);
-      visible.value = true;
+      open.value = true;
     };
 
     const onDelete = (record) => {
@@ -117,7 +117,7 @@ export default defineComponent({
         let data = response.data;
         if (data.code === 200) {
           notification.success({description: "保存成功！"});
-          visible.value = false;
+          open.value = false;
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
@@ -173,7 +173,7 @@ export default defineComponent({
 
     return {
       skToken,
-      visible,
+      open,
       skTokens,
       pagination,
       columns,
