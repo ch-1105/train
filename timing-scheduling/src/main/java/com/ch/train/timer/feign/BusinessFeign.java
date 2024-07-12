@@ -1,7 +1,12 @@
 package com.ch.train.timer.feign;
 
+import com.ch.train.common.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.Date;
 
 /**
  * author: ch
@@ -13,4 +18,7 @@ public interface BusinessFeign {
 
     @GetMapping("/admin/station/query-all-station")
     Object list();
+
+    @GetMapping ("/admin/daily-train/gen-daily/{date}")
+    Result<Object> generateDailyTrain(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date);
 }

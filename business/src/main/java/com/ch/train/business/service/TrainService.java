@@ -19,4 +19,6 @@ public interface TrainService extends IService<Train>{
     void delete(Long id);
 
     List<TrainQueryResponse> queryAllTrain();
+
+    List<Train> getAllTrain() ;
 }

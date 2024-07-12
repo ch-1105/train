@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/timer")
 public class TestController {
-
     @Resource
     private BusinessFeign businessFeign;
     @RequestMapping("/test")

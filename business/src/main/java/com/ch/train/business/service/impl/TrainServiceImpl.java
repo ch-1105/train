@@ -77,13 +77,16 @@ public class TrainServiceImpl extends ServiceImpl<TrainMapper, Train> implements
 
     @Override
     public List<TrainQueryResponse> queryAllTrain() {
+        List<Train> trainList = getAllTrain();
+
+        return BeanUtil.copyToList(trainList, TrainQueryResponse.class);
+    }
+
+    public List<Train> getAllTrain() {
         QueryWrapper<Train> trainWrapper = new QueryWrapper<>();
         //根据车次编号排列
         trainWrapper.orderByDesc("code");
-
-        List<Train> trainList = trainMapper.selectList(trainWrapper);
-
-        return BeanUtil.copyToList(trainList, TrainQueryResponse.class);
+        return trainMapper.selectList(trainWrapper);
     }
 
     private Train getUnionTrain(String code) {
