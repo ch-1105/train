@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import antd from 'ant-design-vue'
+import antd, {notification} from 'ant-design-vue'
 import 'ant-design-vue/dist/reset.css';
 import * as Icons from '@ant-design/icons-vue'
 import axios from "axios";
@@ -33,8 +33,7 @@ axios.interceptors.response.use(function (response) {
     return response;
 }, error => {
     console.log('返回错误：', error);
-    const response = error.response;
-    const status = response.code;
+    notification.error({description: error.response.data.message});
     return Promise.reject(error);
 });
 axios.defaults.baseURL = process.env.VUE_APP_SERVER;

@@ -58,22 +58,22 @@
         </template>
         <a-menu-item key="/daily-train">
           <router-link to="/daily-train">
-            站点管理
-          </router-link>
-        </a-menu-item>
-        <a-menu-item key="/daily-train-carriage">
-          <router-link to="/daily-train-carriage">
-            火车管理
-          </router-link>
-        </a-menu-item>
-        <a-menu-item key="/daily-train-seat">
-          <router-link to="/daily-train-seat">
-            火车车站
+            每日火车
           </router-link>
         </a-menu-item>
         <a-menu-item key="/daily-train-station">
           <router-link to="/daily-train-station">
             每日站点
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/daily-train-carriage">
+          <router-link to="/daily-train-carriage">
+            每日车厢
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/daily-train-seat">
+          <router-link to="/daily-train-seat">
+            每日座位
           </router-link>
         </a-menu-item>
         <a-menu-item key="/sk-token">

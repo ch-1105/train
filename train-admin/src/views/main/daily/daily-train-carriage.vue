@@ -1,6 +1,9 @@
 <template>
   <p>
     <a-space>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <train-select v-model:value="params.trainCode" width="200px"/>
+      <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
@@ -38,10 +41,10 @@
         <a-date-picker v-model:value="dailyTrainCarriage.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
       </a-form-item>
       <a-form-item label="车次编号">
-        <a-input v-model:value="dailyTrainCarriage.trainCode" />
+        <train-select v-model="dailyTrainCarriage.trainCode"/>
       </a-form-item>
       <a-form-item label="箱序">
-        <a-input v-model:value="dailyTrainCarriage.index" />
+        <a-input v-model:value="dailyTrainCarriage.carriageIndex" />
       </a-form-item>
       <a-form-item label="座位类型">
         <a-select v-model:value="dailyTrainCarriage.seatType">
@@ -50,15 +53,15 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="座位数">
-        <a-input v-model:value="dailyTrainCarriage.seatCount" />
-      </a-form-item>
+      <!--<a-form-item label="座位数">-->
+      <!--  <a-input v-model:value="dailyTrainCarriage.seatCount" />-->
+      <!--</a-form-item>-->
       <a-form-item label="排数">
         <a-input v-model:value="dailyTrainCarriage.rowCount" />
       </a-form-item>
-      <a-form-item label="列数">
-        <a-input v-model:value="dailyTrainCarriage.colCount" />
-      </a-form-item>
+      <!--<a-form-item label="列数">-->
+      <!--  <a-input v-model:value="dailyTrainCarriage.colCount" />-->
+      <!--</a-form-item>-->
     </a-form>
   </a-modal>
 </template>
@@ -67,17 +70,23 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import TrainSelect from "@/components/train-select.vue";
 
 export default defineComponent({
   name: "daily-train-carriage-view",
+  components: {TrainSelect},
   setup() {
     const SEAT_TYPE = window.SEAT_TYPE;
     const open = ref(false);
+    const params = ref({
+      date: null,
+      trainCode: null,
+    });
     let dailyTrainCarriage = ref({
       id: undefined,
       date: undefined,
       trainCode: undefined,
-      index: undefined,
+      carriageIndex: undefined,
       seatType: undefined,
       seatCount: undefined,
       rowCount: undefined,
@@ -106,8 +115,8 @@ export default defineComponent({
     },
     {
       title: '箱序',
-      dataIndex: 'index',
-      key: 'index',
+      dataIndex: 'carriageIndex',
+      key: 'carriageIndex',
     },
     {
       title: '座位类型',
@@ -168,7 +177,7 @@ export default defineComponent({
           open.value = false;
           handleQuery({
             page: pagination.value.current,
-            size: pagination.value.pageSize
+            size: pagination.value.pageSize,
           });
         } else {
           notification.error({description: data.message});
@@ -187,7 +196,9 @@ export default defineComponent({
       axios.get("/business/admin/daily-train-carriage/query-list", {
         params: {
           pageNum: param.page,
-          pageSize: param.size
+          pageSize: param.size,
+          date: params.value.date,
+          trainCode: params.value.trainCode,
         }
       }).then((response) => {
         loading.value = false;
@@ -232,7 +243,8 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
+      params
     };
   },
 });

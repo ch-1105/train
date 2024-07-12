@@ -1,10 +1,11 @@
 package com.ch.train.business.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class DailyTrainCarriageQueryResponse {
@@ -29,7 +30,7 @@ public class DailyTrainCarriageQueryResponse {
     /**
      * 箱序
      */
-    private Integer index;
+    private Integer carriageIndex;
 
     /**
      * 座位类型|枚举[SeatTypeEnum]
