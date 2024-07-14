@@ -8,6 +8,8 @@ import com.ch.train.business.response.TrainSeatQueryResponse;
 
 import com.ch.train.common.response.PageResponse;
 
+import java.util.List;
+
 public interface TrainSeatService extends IService<TrainSeat>{
 
     void save(TrainSeatSaveRequest request);
@@ -17,4 +19,6 @@ public interface TrainSeatService extends IService<TrainSeat>{
     void delete(Long id);
 
     void generatorTrainSeat( String trainCode);
+
+    List<TrainSeat> getTrainSeat(String trainCode);
 }

@@ -116,4 +116,11 @@ public class TrainSeatServiceImpl extends ServiceImpl<TrainSeatMapper, TrainSeat
             }
         }
     }
+
+    @Override
+    public List<TrainSeat> getTrainSeat(String trainCode) {
+        QueryWrapper<TrainSeat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("train_code", trainCode);
+        return trainSeatMapper.selectList(queryWrapper);
+    }
 }

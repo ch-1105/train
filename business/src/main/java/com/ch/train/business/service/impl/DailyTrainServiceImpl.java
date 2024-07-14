@@ -14,6 +14,7 @@ import com.ch.train.business.mapper.DailyTrainMapper;
 import com.ch.train.business.request.DailyTrainQueryRequest;
 import com.ch.train.business.request.DailyTrainSaveRequest;
 import com.ch.train.business.response.DailyTrainQueryResponse;
+import com.ch.train.business.service.DailyTrainSeatService;
 import com.ch.train.business.service.DailyTrainService;
 import com.ch.train.business.service.DailyTrainStationService;
 import com.ch.train.business.service.TrainService;
@@ -42,6 +43,9 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
 
     @Resource
     private DailyTrainCarriageServiceImpl dailyTrainCarriageService;
+
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
 
 
     @Override
@@ -135,7 +139,7 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
         dailyTrainCarriageService.generateDailyTrainCode(date,dailyTrain.getCode());
 
         //生成座位
-
+        dailyTrainSeatService.generateDailyTrainCode(date,dailyTrain.getCode());
         log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
     }
 
