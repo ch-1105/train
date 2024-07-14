@@ -8,6 +8,8 @@ import com.ch.train.business.response.TrainCarriageQueryResponse;
 
 import com.ch.train.common.response.PageResponse;
 
+import java.util.List;
+
 public interface TrainCarriageService extends IService<TrainCarriage>{
 
     void save(TrainCarriageSaveRequest request);
@@ -15,4 +17,6 @@ public interface TrainCarriageService extends IService<TrainCarriage>{
     PageResponse<TrainCarriageQueryResponse> queryList(TrainCarriageQueryRequest request);
 
     void delete(Long id);
+
+    List<TrainCarriage> getTrainCarriage(String trainCode);
 }

@@ -40,6 +40,10 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
     @Resource
     private DailyTrainStationService dailyTrainStationService;
 
+    @Resource
+    private DailyTrainCarriageServiceImpl dailyTrainCarriageService;
+
+
     @Override
     public void save(DailyTrainSaveRequest request) {
         DateTime now = DateTime.now();
@@ -123,9 +127,16 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
         dailyTrain.setUpdateTime(now);
         dailyTrain.setDate(date);
         dailyTrainMapper.insert(dailyTrain);
-        dailyTrainStationService.generateDailyTrainCode(date,dailyTrain.getCode());
-        log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
 
+        //生成车站
+        dailyTrainStationService.generateDailyTrainCode(date,dailyTrain.getCode());
+
+        //生成车厢
+        dailyTrainCarriageService.generateDailyTrainCode(date,dailyTrain.getCode());
+
+        //生成座位
+
+        log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
     }
 
 }

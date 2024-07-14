@@ -100,4 +100,11 @@ public class TrainCarriageServiceImpl extends ServiceImpl<TrainCarriageMapper, T
         }
         return list.get(0);
     }
+
+    @Override
+    public List<TrainCarriage> getTrainCarriage(String trainCode) {
+        QueryWrapper<TrainCarriage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("train_code", trainCode);
+        return trainCarriageMapper.selectList(queryWrapper);
+    }
 }
