@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, ConfirmOrder> implements ConfirmOrderService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConfirmOrderService.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfirmOrderService.class);
 
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
@@ -49,14 +49,14 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         QueryWrapper<ConfirmOrder> confirmOrderWrapper = new QueryWrapper<>();
         confirmOrderWrapper.orderByDesc("id");
 
-        LOG.info("查询页码：{}", request.getPageNum());
-        LOG.info("每页条数：{}", request.getPageSize());
+        log.info("查询页码：{}", request.getPageNum());
+        log.info("每页条数：{}", request.getPageSize());
         PageHelper.startPage(request.getPageNum(), request.getPageSize());
         List<ConfirmOrder> confirmOrderList = confirmOrderMapper.selectList(confirmOrderWrapper);
 
         PageInfo<ConfirmOrder> pageInfo = new PageInfo<>(confirmOrderList);
-        LOG.info("总行数：{}", pageInfo.getTotal());
-        LOG.info("总页数：{}", pageInfo.getPages());
+        log.info("总行数：{}", pageInfo.getTotal());
+        log.info("总页数：{}", pageInfo.getPages());
 
         List<ConfirmOrderQueryResponse> list = BeanUtil.copyToList(confirmOrderList, ConfirmOrderQueryResponse.class);
 

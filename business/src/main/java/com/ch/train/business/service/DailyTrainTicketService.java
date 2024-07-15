@@ -1,13 +1,18 @@
 package com.ch.train.business.service;
 
-import com.ch.train.business.domain.DailyTrainTicket;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ch.train.business.domain.DailyTrainTicket;
+import com.ch.train.business.request.DailyTrainTicketQueryRequest;
+import com.ch.train.business.request.DailyTrainTicketSaveRequest;
+import com.ch.train.business.response.DailyTrainTicketQueryResponse;
 
-/**
-* @author ch051
-* @description 针对表【daily_train_ticket(余票信息)】的数据库操作Service
-* @createDate 2024-07-12 08:58:05
-*/
-public interface DailyTrainTicketService extends IService<DailyTrainTicket> {
+import com.ch.train.common.response.PageResponse;
 
+public interface DailyTrainTicketService extends IService<DailyTrainTicket>{
+
+    void save(DailyTrainTicketSaveRequest request);
+
+    PageResponse<DailyTrainTicketQueryResponse> queryList(DailyTrainTicketQueryRequest request);
+
+    void delete(Long id);
 }

@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class SkTokenServiceImpl extends ServiceImpl<SkTokenMapper, SkToken> implements SkTokenService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SkTokenService.class);
+    private static final Logger log = LoggerFactory.getLogger(SkTokenService.class);
 
     @Resource
     private SkTokenMapper skTokenMapper;
@@ -49,14 +49,14 @@ public class SkTokenServiceImpl extends ServiceImpl<SkTokenMapper, SkToken> impl
         QueryWrapper<SkToken> skTokenWrapper = new QueryWrapper<>();
         skTokenWrapper.orderByDesc("id");
 
-        LOG.info("查询页码：{}", request.getPageNum());
-        LOG.info("每页条数：{}", request.getPageSize());
+        log.info("查询页码：{}", request.getPageNum());
+        log.info("每页条数：{}", request.getPageSize());
         PageHelper.startPage(request.getPageNum(), request.getPageSize());
         List<SkToken> skTokenList = skTokenMapper.selectList(skTokenWrapper);
 
         PageInfo<SkToken> pageInfo = new PageInfo<>(skTokenList);
-        LOG.info("总行数：{}", pageInfo.getTotal());
-        LOG.info("总页数：{}", pageInfo.getPages());
+        log.info("总行数：{}", pageInfo.getTotal());
+        log.info("总页数：{}", pageInfo.getPages());
 
         List<SkTokenQueryResponse> list = BeanUtil.copyToList(skTokenList, SkTokenQueryResponse.class);
 
