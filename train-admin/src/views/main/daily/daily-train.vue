@@ -6,6 +6,7 @@
       <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
+      <a-button type="primary" @click="openGenDailyVisible">生成某日车次数据</a-button>
 
     </a-space>
   </p>
@@ -71,6 +72,14 @@
       </a-form-item>
     </a-form>
   </a-modal>
+  <a-modal v-model:visible="genDailyVisible" title="生成车次" @ok="handleGenDailyOk"
+           :confirm-loading="genDailyLoading" ok-text="确认" cancel-text="取消">
+    <a-form :model="genDaily" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
+      <a-form-item label="日期">
+        <a-date-picker v-model:value="genDaily.date" placeholder="请选择日期"/>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script>
@@ -78,6 +87,7 @@ import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
 import TrainSelect from "@/components/train-select.vue";
+import dayjs from "dayjs";
 
 export default defineComponent({
   name: "daily-train-view",
@@ -104,6 +114,11 @@ export default defineComponent({
       updateTime: undefined,
     });
     const dailyTrains = ref([]);
+    const genDailyVisible = ref(false);
+    const genDailyLoading = ref(false);
+    const genDaily = ref({
+      date: undefined
+    });
     // 分页的三个属性名是固定的
     const pagination = ref({
       total: 0,
@@ -258,6 +273,25 @@ export default defineComponent({
       dailyTrain.value = Object.assign(dailyTrain.value, t);
     }
 
+    const openGenDailyVisible=()=>{
+      genDailyVisible.value = true;
+    }
+
+    const handleGenDailyOk=()=>{
+      let date = dayjs(genDaily.value.date).format("YYYY-MM-DD");
+      axios.get("/business/admin/daily-train//gen-daily/"+date).then((response) => {
+        loading.value = false;
+        let data = response.data;
+        if (data.code === 200) {
+          notification.success({description: data.message});
+          genDailyVisible.value = false;
+        } else {
+          notification.error({description: data.message});
+          genDailyVisible.value = false;
+        }
+      });
+    }
+
     return {
       TRAIN_TYPE,
       dailyTrain,
@@ -273,7 +307,12 @@ export default defineComponent({
       onEdit,
       onDelete,
       onChange,
-      params
+      params,
+      genDailyVisible,
+      genDailyLoading,
+      genDaily,
+      handleGenDailyOk,
+      openGenDailyVisible,
     };
   },
 });
