@@ -26,6 +26,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -87,6 +88,7 @@ public class DailyTrainSeatServiceImpl extends ServiceImpl<DailyTrainSeatMapper,
         dailyTrainSeatMapper.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void generateDailyTrainCode(Date date, String trainCode) {
         log.info("生成日期【{}】车次【{}】的座位信息开始", DateUtil.formatDate(date), trainCode);

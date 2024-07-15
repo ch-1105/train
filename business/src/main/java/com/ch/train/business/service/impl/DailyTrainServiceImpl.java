@@ -14,10 +14,7 @@ import com.ch.train.business.mapper.DailyTrainMapper;
 import com.ch.train.business.request.DailyTrainQueryRequest;
 import com.ch.train.business.request.DailyTrainSaveRequest;
 import com.ch.train.business.response.DailyTrainQueryResponse;
-import com.ch.train.business.service.DailyTrainSeatService;
-import com.ch.train.business.service.DailyTrainService;
-import com.ch.train.business.service.DailyTrainStationService;
-import com.ch.train.business.service.TrainService;
+import com.ch.train.business.service.*;
 import com.ch.train.common.response.PageResponse;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -25,6 +22,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -46,6 +44,9 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
 
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
+
+    @Resource
+    private DailyTrainTicketService dailyTrainTicketService;
 
 
     @Override
@@ -115,6 +116,7 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
         }
     }
 
+    @Transactional
     public void generateDailyTrain(Date date,Train train) {
         log.info("生成日期【{}】车次【{}】的信息开始", DateUtil.formatDate(date), train.getCode());
         DateTime now = DateTime.now();
@@ -140,6 +142,9 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
 
         //生成座位
         dailyTrainSeatService.generateDailyTrainCode(date,dailyTrain.getCode());
+
+        //生成余票
+        dailyTrainTicketService.generateDailyByTrainCode(date,dailyTrain.getCode());
         log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
     }
 
