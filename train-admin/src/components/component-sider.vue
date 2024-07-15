@@ -61,6 +61,11 @@
             每日火车
           </router-link>
         </a-menu-item>
+        <a-menu-item key="/daily-train-ticket">
+          <router-link to="/daily-train-ticket">
+            每日余票
+          </router-link>
+        </a-menu-item>
         <a-menu-item key="/daily-train-station">
           <router-link to="/daily-train-station">
             每日火车站点
