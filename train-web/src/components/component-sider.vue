@@ -9,24 +9,21 @@
         mode="inline"
         style="height: 100%"
     >
-      <a-sub-menu key="sub1">
-        <template #title>
-                <span>
-                  <user-outlined />
-                  subnav 1
-                </span>
-        </template>
-        <a-menu-item key="/welcome">
-          <router-link to="/welcome">
-            welcome
-          </router-link>
-          </a-menu-item>
-        <a-menu-item key="/passenger">
-          <router-link to="/passenger">
-            passenger
-          </router-link>
-        </a-menu-item>
-      </a-sub-menu>
+      <a-menu-item key="/welcome">
+        <router-link to="/welcome">
+          welcome
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="/passenger">
+        <router-link to="/passenger">
+          passenger
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="/ticket">
+        <router-link to="/ticket">
+          ticket
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>
