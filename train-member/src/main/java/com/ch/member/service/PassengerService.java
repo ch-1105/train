@@ -8,6 +8,8 @@ import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
 import com.ch.member.responce.PassengerQueryResponse;
 
+import java.util.List;
+
 /**
 * @author ch051
 * @description 针对表【passenger(乘车人)】的数据库操作Service
@@ -20,4 +22,6 @@ public interface PassengerService extends IService<Passenger> {
     PageResponse<PassengerQueryResponse> getPassengerList(PassengerQueryRequest passenger);
 
     void deletePassenger(Long id);
+
+    List<Passenger> getMinePassenger(String memberId);
 }

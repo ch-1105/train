@@ -41,4 +41,9 @@ public class PassengerController {
         passengerService.deletePassenger(id);
         return Result.success();
     }
+
+    @GetMapping("/getMine")
+    public Result<Object> getMinePassenger(){
+        return Result.success(passengerService.getMinePassenger(LoginMemberContext.getId()));
+    }
 }

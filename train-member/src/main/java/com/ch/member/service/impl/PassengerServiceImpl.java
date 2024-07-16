@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.train.common.context.LoginMemberContext;
@@ -87,6 +88,17 @@ public class PassengerServiceImpl extends ServiceImpl<PassengerMapper, Passenger
     @Override
     public void deletePassenger(Long id) {
         passengerMapper.deleteById(id);
+    }
+
+    @Override
+    public List<Passenger> getMinePassenger(String memberId) {
+        QueryWrapper<Passenger> passengerQueryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(memberId)) {
+            passengerQueryWrapper.eq("member_id",
+                    memberId);
+        }
+        passengerQueryWrapper.orderByDesc("id");
+        return passengerMapper.selectList(passengerQueryWrapper);
     }
 }
 

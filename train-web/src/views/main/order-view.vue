@@ -15,14 +15,19 @@
         <span class="order-train-ticket-main">{{item.count}}</span>&nbsp;张票&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </span>
     </div>
+
+    <div class="passengerList">{{passengerList}}</div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
+import axios from "axios";
+import {notification} from "ant-design-vue";
   export default defineComponent({
     name: "order-view",
     setup() {
+      const passengerList = ref({});
       const dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
       console.log("dailyTrainTicket :  ",dailyTrainTicket);
       const SEAT_TYPE = window.SEAT_TYPE;
@@ -56,9 +61,26 @@ import { defineComponent } from 'vue';
           })
         }
       }
+
+      const getMinePassengers = () => {
+        axios.get("/member/passenger/getMine").then(response => {
+          let data = response.data;
+          if (data.code === 200){
+            passengerList.value = data.data;
+            console.log("passengerList.value : ",passengerList.value)
+          } else {
+            notification.error({ description: data.message });
+          }
+        });
+      }
+
+      onMounted(() => {
+        getMinePassengers();
+      });
       return {
         dailyTrainTicket,
         seatTypes,
+        passengerList,
       };
     },
   });
