@@ -20,11 +20,12 @@
     <a-checkbox-group v-model:value="passengerChecks" :options="passengerOptions" style="width: 100%"/>
     <br/>
     选中乘客 : {{passengerChecks}}
+    车票变化 : {{tickets}}
   </div>
 </template>
 
 <script>
-import {defineComponent, onMounted, ref} from 'vue';
+import {defineComponent, onMounted, ref, watch} from 'vue';
 import axios from "axios";
 import {notification} from "ant-design-vue";
   export default defineComponent({
@@ -33,6 +34,7 @@ import {notification} from "ant-design-vue";
       const passengerList = ref([]);
       const passengerOptions = ref([]);
       const passengerChecks = ref([]);
+
       const dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
       console.log("dailyTrainTicket :  ",dailyTrainTicket);
       const SEAT_TYPE = window.SEAT_TYPE;
@@ -67,6 +69,31 @@ import {notification} from "ant-design-vue";
         }
       }
 
+      // 购票列表，用于界面展示，并传递到后端接口，用来描述：哪个乘客购买什么座位的票
+      // {
+      //   passengerId: 123,
+      //   passengerType: "1",
+      //   passengerName: "张三",
+      //   passengerIdCard: "12323132132",
+      //   seatTypeCode: "1",
+      //   seat: "C1"
+      // }
+      const tickets = ref([]);
+      watch(passengerChecks, (oldValue,newValue) => {
+        console.log("发生变化 :   ",oldValue,newValue);
+        // 每次有变化时，把购票列表清空，重新构造列表
+        tickets.value = [];
+        passengerChecks.value.forEach(item => {
+          tickets.value.push({
+            passengerId: item.id,
+            passengerType: item.type,
+            passengerName: item.name,
+            passengerIdCard: item.idCard,
+            seatTypeCode: seatTypes[0].code,
+          });
+        })
+      }, {immediate: true});
+
       const getMinePassengers = () => {
         axios.get("/member/passenger/getMine").then(response => {
           let data = response.data;
@@ -75,7 +102,7 @@ import {notification} from "ant-design-vue";
             passengerList.value.forEach(item => {
               passengerOptions.value.push({
                 label: item.name,
-                value: item.id,
+                value: item,
               })
             })
             console.log("passengerList.value : ",passengerList.value)
@@ -94,6 +121,7 @@ import {notification} from "ant-design-vue";
         passengerList,
         passengerOptions,
         passengerChecks,
+        tickets,
       };
     },
   });
