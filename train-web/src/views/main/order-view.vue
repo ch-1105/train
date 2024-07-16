@@ -16,11 +16,77 @@
       </span>
     </div>
 
+    <a-divider></a-divider>
+    <b>勾选要购票的乘客：</b>&nbsp;
     <div class="passengerList">{{passengerList}}</div>
     <a-checkbox-group v-model:value="passengerChecks" :options="passengerOptions" style="width: 100%"/>
     <br/>
     选中乘客 : {{passengerChecks}}
     车票变化 : {{tickets}}
+
+    <div class="order-tickets">
+      <a-row class="order-tickets-header" v-if="tickets.length > 0">
+        <a-col :span="2">乘客</a-col>
+        <a-col :span="6">身份证</a-col>
+        <a-col :span="4">票种</a-col>
+        <a-col :span="4">座位类型</a-col>
+      </a-row>
+      <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
+        <a-col :span="2">{{ticket.passengerName}}</a-col>
+        <a-col :span="6">{{ticket.passengerIdCard}}</a-col>
+        <a-col :span="4">
+          <a-select v-model:value="ticket.passengerType" style="width: 100%">
+            <a-select-option v-for="item in PASSENGER_TYPE_ARRAY" :key="item.key" :value="item.key">
+              {{item.value}}
+            </a-select-option>
+          </a-select>
+        </a-col>
+        <a-col :span="4">
+          <a-select v-model:value="ticket.seatTypeCode" style="width: 100%">
+            <a-select-option v-for="item in seatTypes" :key="item.key" :value="item.key">
+              {{item.value}}
+            </a-select-option>
+          </a-select>
+        </a-col>
+      </a-row>
+    </div>
+
+    <div v-if="tickets.length > 0">
+      <a-button type="primary" size="large" @click="finishCheckPassenger">提交订单</a-button>
+    </div>
+
+    <a-modal v-model:open="open" title="请核对以下信息"
+             style="top: 50px; width: 800px"
+             ok-text="确认" cancel-text="取消"
+             @ok="showFirstImageCodeModal">
+      <div class="order-tickets">
+        <a-row class="order-tickets-header" v-if="tickets.length > 0">
+          <a-col :span="3">乘客</a-col>
+          <a-col :span="15">身份证</a-col>
+          <a-col :span="3">票种</a-col>
+          <a-col :span="3">座位类型</a-col>
+        </a-row>
+        <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
+          <a-col :span="3">{{ticket.passengerName}}</a-col>
+          <a-col :span="15">{{ticket.passengerIdCard}}</a-col>
+          <a-col :span="3">
+          <span v-for="item in PASSENGER_TYPE_ARRAY" :key="item.key">
+            <span v-if="item.key === ticket.passengerType">
+              {{item.value}}
+            </span>
+          </span>
+          </a-col>
+          <a-col :span="3">
+          <span v-for="item in seatTypes" :key="item.key">
+            <span v-if="item.key === ticket.seatTypeCode">
+              {{item.value}}
+            </span>
+          </span>
+          </a-col>
+        </a-row>
+      </div>
+    </a-modal>
+    
   </div>
 </template>
 
@@ -31,19 +97,21 @@ import {notification} from "ant-design-vue";
   export default defineComponent({
     name: "order-view",
     setup() {
+      const open = ref(false);
       const passengerList = ref([]);
       const passengerOptions = ref([]);
       const passengerChecks = ref([]);
 
+      const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE;
+
       const dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
       console.log("dailyTrainTicket :  ",dailyTrainTicket);
       const SEAT_TYPE = window.SEAT_TYPE;
-      console.log(SEAT_TYPE)
       // 本车次提供的座位类型seatTypes，含票价，余票等信息，例：
       // {
       //   type: "YDZ",
-      //   code: "1",
-      //   desc: "一等座",
+      //   key: "1",
+      //   value: "一等座",
       //   count: "100",
       //   price: "50",
       // }
@@ -61,7 +129,7 @@ import {notification} from "ant-design-vue";
           // console.log("SEAT_TYPE[KEY][\"price\"] : ",SEAT_TYPE[KEY]["price"])
           seatTypes.push({
             type: KEY,
-            code: SEAT_TYPE[KEY]["key"],
+            key: SEAT_TYPE[KEY]["key"],
             value: SEAT_TYPE[KEY]["value"],
             count: dailyTrainTicket[key],
             price: SEAT_TYPE[KEY]["price"],
@@ -89,7 +157,7 @@ import {notification} from "ant-design-vue";
             passengerType: item.type,
             passengerName: item.name,
             passengerIdCard: item.idCard,
-            seatTypeCode: seatTypes[0].code,
+            seatTypeCode: seatTypes[0].key,
           });
         })
       }, {immediate: true});
@@ -99,17 +167,28 @@ import {notification} from "ant-design-vue";
           let data = response.data;
           if (data.code === 200){
             passengerList.value = data.data;
+            console.log("passengerList.value : ",passengerList.value)
             passengerList.value.forEach(item => {
               passengerOptions.value.push({
                 label: item.name,
                 value: item,
               })
             })
-            console.log("passengerList.value : ",passengerList.value)
           } else {
             notification.error({ description: data.message });
           }
         });
+      }
+
+      const finishCheckPassenger = () => {
+        if (tickets.value.length > 5){
+          notification.error({ description: "超出购票限制" });
+          return;
+        }
+        open.value = true;
+      }
+      const showFirstImageCodeModal = () => {
+        open.value = false;
       }
 
       onMounted(() => {
@@ -122,6 +201,10 @@ import {notification} from "ant-design-vue";
         passengerOptions,
         passengerChecks,
         tickets,
+        PASSENGER_TYPE_ARRAY,
+        open,
+        showFirstImageCodeModal,
+        finishCheckPassenger,
       };
     },
   });
