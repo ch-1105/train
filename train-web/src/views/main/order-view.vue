@@ -9,7 +9,7 @@ import { defineComponent } from 'vue';
   export default defineComponent({
     name: "order-view",
     setup() {
-      const order = sessionStorage.getItem("dailyTrainTicket") || {};
+      const order = sessionStorage.getItem(SESSION_ORDER) || {};
       return {
         order
       };
