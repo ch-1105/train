@@ -65,7 +65,20 @@ public class DailyTrainTicketServiceImpl extends ServiceImpl<DailyTrainTicketMap
     @Override
     public PageResponse<DailyTrainTicketQueryResponse> queryList(DailyTrainTicketQueryRequest request) {
         QueryWrapper<DailyTrainTicket> dailyTrainTicketWrapper = new QueryWrapper<>();
-        dailyTrainTicketWrapper.orderByDesc("id");
+        dailyTrainTicketWrapper.orderByAsc("train_code");
+
+        if (ObjectUtil.isNotNull(request.getDate())) {
+            dailyTrainTicketWrapper.eq("date", request.getDate());
+        }
+        if (ObjectUtil.isNotNull(request.getTrainCode())) {
+            dailyTrainTicketWrapper.eq("train_code", request.getTrainCode());
+        }
+        if (ObjectUtil.isNotNull(request.getStart())) {
+            dailyTrainTicketWrapper.eq("start", request.getStart());
+        }
+        if (ObjectUtil.isNotNull(request.getEnd())) {
+            dailyTrainTicketWrapper.eq("end", request.getEnd());
+        }
 
         log.info("查询页码：{}", request.getPageNum());
         log.info("每页条数：{}", request.getPageSize());

@@ -1,6 +1,11 @@
 <template>
   <p>
     <a-space>
+      <train-select v-model:value="params.trainCode" width="200px"/>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <station-select-view v-model="params.start" width="200px"/>
+      <station-select-view v-model="params.end" width="200px"/>
+      <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
@@ -89,9 +94,12 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
+import TrainSelect from "@/components/train-select.vue";
+import StationSelectView from "@/components/station-select.vue";
 
 export default defineComponent({
   name: "daily-train-ticket-view",
+  components: {StationSelectView, TrainSelect},
   setup() {
     const open = ref(false);
     let dailyTrainTicket = ref({
@@ -116,6 +124,12 @@ export default defineComponent({
       ywPrice: undefined,
       createTime: undefined,
       updateTime: undefined,
+    });
+    const params = ref({
+      date: null,
+      trainCode: null,
+      start: null,
+      end: null,
     });
     const dailyTrainTickets = ref([]);
     // 分页的三个属性名是固定的
@@ -267,14 +281,18 @@ export default defineComponent({
       if (!param) {
         param = {
           page: 1,
-          size: pagination.value.pageSize
+          size: pagination.value.pageSize,
         };
       }
       loading.value = true;
       axios.get("/business/admin/daily-train-ticket/query-list", {
         params: {
           pageNum: param.page,
-          pageSize: param.size
+          pageSize: param.size,
+          date: params.value.date,
+          trainCode: params.value.trainCode,
+          start: params.value.start,
+          end: params.value.end,
         }
       }).then((response) => {
         loading.value = false;
@@ -318,7 +336,8 @@ export default defineComponent({
       onAdd,
       handleOk,
       onEdit,
-      onDelete
+      onDelete,
+      params
     };
   },
 });
