@@ -1,7 +1,6 @@
 <template>
   <p>
     <a-space>
-      <train-select v-model:value="params.trainCode" width="200px"/>
       <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
       <station-select-view v-model="params.start" width="200px"/>
       <station-select-view v-model="params.end" width="200px"/>
@@ -78,13 +77,12 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
-import TrainSelect from "@/components/train-select.vue";
 import StationSelectView from "@/components/station-select.vue";
 import dayjs from "dayjs";
 
 export default defineComponent({
   name: "ticket-view",
-  components: {StationSelectView, TrainSelect},
+  components: {StationSelectView},
   setup() {
     const open = ref(false);
     let dailyTrainTicket = ref({
@@ -169,23 +167,20 @@ export default defineComponent({
       },
     ];
 
-    const handleOk = () => {
-      axios.post("/business/passenger/daily-train-ticket/save", dailyTrainTicket.value).then((response) => {
-        let data = response.data;
-        if (data.code === 200) {
-          notification.success({description: "保存成功！"});
-          open.value = false;
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          });
-        } else {
-          notification.error({description: data.message});
-        }
-      });
-    };
 
     const handleQuery = (param) => {
+      if(Tool.isEmpty(params.value.date)) {
+        notification.error({description: "请选择日期"});
+        return; //记得返回return
+      }
+      if(Tool.isEmpty(params.value.start)) {
+        notification.error({description: "请选择出发站"});
+        return; //记得返回return
+      }
+      if(Tool.isEmpty(params.value.end)) {
+        notification.error({description: "请选择终点站"});
+        return; //记得返回return
+      }
       if (!param) {
         param = {
           page: 1,
@@ -198,7 +193,6 @@ export default defineComponent({
           pageNum: param.page,
           pageSize: param.size,
           date: params.value.date,
-          trainCode: params.value.trainCode,
           start: params.value.start,
           end: params.value.end,
         }
@@ -226,10 +220,6 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });
     });
 
     const calDuration = (startTime, endTime) => {
@@ -247,7 +237,6 @@ export default defineComponent({
       handleTableChange,
       handleQuery,
       loading,
-      handleOk,
       params,
       calDuration
     };

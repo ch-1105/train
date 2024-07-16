@@ -27,6 +27,11 @@
           passenger
         </router-link>
       </a-menu-item>
+      <a-menu-item key="/ticket">
+        <router-link to="/ticket">
+          ticket
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-header>
 
