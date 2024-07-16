@@ -17,6 +17,9 @@
     </div>
 
     <div class="passengerList">{{passengerList}}</div>
+    <a-checkbox-group v-model:value="passengerChecks" :options="passengerOptions" style="width: 100%"/>
+    <br/>
+    选中乘客 : {{passengerChecks}}
   </div>
 </template>
 
@@ -27,7 +30,9 @@ import {notification} from "ant-design-vue";
   export default defineComponent({
     name: "order-view",
     setup() {
-      const passengerList = ref({});
+      const passengerList = ref([]);
+      const passengerOptions = ref([]);
+      const passengerChecks = ref([]);
       const dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
       console.log("dailyTrainTicket :  ",dailyTrainTicket);
       const SEAT_TYPE = window.SEAT_TYPE;
@@ -67,6 +72,12 @@ import {notification} from "ant-design-vue";
           let data = response.data;
           if (data.code === 200){
             passengerList.value = data.data;
+            passengerList.value.forEach(item => {
+              passengerOptions.value.push({
+                label: item.name,
+                value: item.id,
+              })
+            })
             console.log("passengerList.value : ",passengerList.value)
           } else {
             notification.error({ description: data.message });
@@ -81,6 +92,8 @@ import {notification} from "ant-design-vue";
         dailyTrainTicket,
         seatTypes,
         passengerList,
+        passengerOptions,
+        passengerChecks,
       };
     },
   });
