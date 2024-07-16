@@ -1,6 +1,7 @@
 package com.ch.train.business.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ch.train.business.domain.DailyTrain;
 import com.ch.train.business.domain.DailyTrainTicket;
 import com.ch.train.business.request.DailyTrainTicketQueryRequest;
 import com.ch.train.business.request.DailyTrainTicketSaveRequest;
@@ -18,5 +19,5 @@ public interface DailyTrainTicketService extends IService<DailyTrainTicket>{
 
     void delete(Long id);
 
-    void generateDailyByTrainCode(Date date, String trainCode);
+    void generateDailyByTrainCode(DailyTrain dailyTrain,Date date, String trainCode);
 }

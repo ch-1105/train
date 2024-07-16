@@ -109,8 +109,8 @@ public class DailyTrainSeatServiceImpl extends ServiceImpl<DailyTrainSeatMapper,
             log.info("没有车站数据，请先导入车站数据");
             return;
         }
-        for (TrainSeat TrainSeat : trainSeats) {
-            DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(TrainSeat, DailyTrainSeat.class);
+        for (TrainSeat trainSeat : trainSeats) {
+            DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(trainSeat, DailyTrainSeat.class);
             dailyTrainSeat.setId(IdUtil.getSnowflakeNextId());
             dailyTrainSeat.setDate(date);
             dailyTrainSeat.setCreateTime(now);
@@ -120,4 +120,18 @@ public class DailyTrainSeatServiceImpl extends ServiceImpl<DailyTrainSeatMapper,
         }
         log.info("生成日期【{}】车次【{}】的座位信息结束", DateUtil.formatDate(date), trainCode);
     }
+
+    @Override
+    public Integer countSeatBySeatType(Date date, String trainCode, String seatType) {
+        QueryWrapper<DailyTrainSeat> wrapper = new QueryWrapper<>();
+        wrapper.eq("date", date);
+        wrapper.eq("train_code", trainCode);
+        wrapper.eq("seat_type", seatType);
+        Long count = dailyTrainSeatMapper.selectCount(wrapper);
+        if (count == 0L) {
+            count = -1L;
+        }
+        return count.intValue();
+    }
+
 }

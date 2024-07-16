@@ -144,7 +144,7 @@ public class DailyTrainServiceImpl extends ServiceImpl<DailyTrainMapper, DailyTr
         dailyTrainSeatService.generateDailyTrainCode(date,dailyTrain.getCode());
 
         //生成余票
-        dailyTrainTicketService.generateDailyByTrainCode(date,dailyTrain.getCode());
+        dailyTrainTicketService.generateDailyByTrainCode(dailyTrain,date,dailyTrain.getCode());
         log.info("生成日期【{}】车次【{}】的信息结束", DateUtil.formatDate(date), train.getCode());
     }
 

@@ -19,4 +19,6 @@ public interface DailyTrainSeatService extends IService<DailyTrainSeat>{
     void delete(Long id);
 
     void generateDailyTrainCode(Date date, String trainCode);
+
+    Integer countSeatBySeatType(Date date, String trainCode, String seatType);
 }
