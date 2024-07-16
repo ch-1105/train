@@ -222,4 +222,28 @@ import {notification} from "ant-design-vue";
   color: red;
   font-size: 18px;
 }
+
+.order-tickets {
+  margin: 10px 0;
+}
+.order-tickets .ant-col {
+  padding: 5px 10px;
+}
+.order-tickets .order-tickets-header {
+  background-color: cornflowerblue;
+  border: solid 1px cornflowerblue;
+  color: white;
+  font-size: 16px;
+  padding: 5px 0;
+}
+.order-tickets .order-tickets-row {
+  border: solid 1px cornflowerblue;
+  border-top: none;
+  vertical-align: middle;
+  line-height: 30px;
+}
+
+.order-tickets .choose-seat-item {
+  margin: 5px 5px;
+}
 </style>
