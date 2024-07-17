@@ -1,12 +1,12 @@
 package com.ch.train.business.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 确认订单
@@ -61,7 +61,7 @@ public class ConfirmOrder implements Serializable {
      * 车票
      */
     @TableField(value = "tickets")
-    private Object tickets;
+    private String tickets;
 
     /**
      * 订单状态|枚举[ConfirmOrderStatusEnum]

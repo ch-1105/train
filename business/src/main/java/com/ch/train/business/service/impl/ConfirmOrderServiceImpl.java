@@ -4,21 +4,24 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.ch.train.common.response.PageResponse;
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.train.business.domain.ConfirmOrder;
+import com.ch.train.business.enums.ConfirmOrderStatusEnum;
 import com.ch.train.business.mapper.ConfirmOrderMapper;
-import com.ch.train.business.service.ConfirmOrderService;
 import com.ch.train.business.request.ConfirmOrderQueryRequest;
 import com.ch.train.business.request.ConfirmOrderSaveRequest;
 import com.ch.train.business.response.ConfirmOrderQueryResponse;
+import com.ch.train.business.service.ConfirmOrderService;
+import com.ch.train.common.context.LoginMemberContext;
+import com.ch.train.common.response.PageResponse;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import java.util.List;
 
@@ -48,8 +51,21 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
     private boolean orderTicket(ConfirmOrderSaveRequest request) {
         // 业务校验 判断票数>0 车票、车次、座位存在，且车票、车次、座位状态为可用 乘车人是否购买过同一张票等
 
+        DateTime now = DateTime.now();
         // 获取余票
-
+        ConfirmOrder confirmOrder = new ConfirmOrder();
+        confirmOrder.setId(IdUtil.getSnowflakeNextId());
+        confirmOrder.setMemberId(Long.valueOf(LoginMemberContext.getId()));
+        confirmOrder.setDate(request.getDate());
+        confirmOrder.setTrainCode(request.getTrainCode());
+        confirmOrder.setStart(request.getStart());
+        confirmOrder.setEnd(request.getEnd());
+        confirmOrder.setDailyTrainTicketId(request.getDailyTrainTicketId());
+        confirmOrder.setTickets(JSON.toJSONString(request.getTickets()));
+        confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
+        confirmOrder.setCreateTime(now);
+        confirmOrder.setUpdateTime(now);
+        confirmOrderMapper.insert(confirmOrder);
         // 预扣存
 
         // 选座
