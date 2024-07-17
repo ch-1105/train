@@ -4,12 +4,14 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.train.business.domain.ConfirmOrder;
 import com.ch.train.business.domain.DailyTrainTicket;
 import com.ch.train.business.enums.ConfirmOrderStatusEnum;
+import com.ch.train.business.enums.SeatColEnum;
 import com.ch.train.business.enums.SeatTypeEnum;
 import com.ch.train.business.mapper.ConfirmOrderMapper;
 import com.ch.train.business.request.ConfirmOrderQueryRequest;
@@ -28,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,6 +57,7 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         String trainCode = request.getTrainCode();
         String start = request.getStart();
         String end = request.getEnd();
+        List<ConfirmOrderTicketRequest> tickets = request.getTickets();
 
         // 获取余票
         ConfirmOrder confirmOrder = new ConfirmOrder();
@@ -64,7 +68,7 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         confirmOrder.setStart(start);
         confirmOrder.setEnd(end);
         confirmOrder.setDailyTrainTicketId(request.getDailyTrainTicketId());
-        confirmOrder.setTickets(JSON.toJSONString(request.getTickets()));
+        confirmOrder.setTickets(JSON.toJSONString(tickets));
         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
         confirmOrder.setCreateTime(now);
         confirmOrder.setUpdateTime(now);
@@ -73,14 +77,43 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         DailyTrainTicket dailyTrainTicket =
                 dailyTrainTicketService.selectByUnique(trainCode, date, start, end);
         log.info("余票信息：{}", dailyTrainTicket);
-        for (ConfirmOrderTicketRequest ticket: request.getTickets()) {
+        for (ConfirmOrderTicketRequest ticket: tickets) {
             String seatTypeCode = ticket.getSeatTypeCode();
             SeatTypeEnum seatTypeEnum = EnumUtil.getBy(SeatTypeEnum::getCode, seatTypeCode);
             reduceTicket(seatTypeEnum, dailyTrainTicket);
         }
-        // 选座
-        
-            // 每车厢循环获取座位是否可选
+        // 选座 这里需要计算偏移值，c1 - d2 【0 - 5】 座位偏移值以0开始计算,没有选座就直接跳过
+        ConfirmOrderTicketRequest ticketReq0 = tickets.get(0);
+        if (StrUtil.isNotBlank(ticketReq0.getSeat())) {
+            List<SeatColEnum> cols = SeatColEnum.getColsByType(ticketReq0.getSeatTypeCode());
+            log.info("本次选座的座位信息：{}", cols);
+            ArrayList<String> optionList = new ArrayList<>();
+            // 组成两排座位进行参照 eg:list([a1,b1,c1,d1,a2,b2,c2,d2])
+            for (int i = 0; i < 2; i++) {
+                for (SeatColEnum col : cols) {
+                    optionList.add(col.getCode() + (i+1));
+                }
+            }
+            log.info("座位参照信息：{}", optionList);
+            // 计算绝对偏移值
+            ArrayList<Integer> absOffsetList = new ArrayList<>();
+            for (ConfirmOrderTicketRequest ticket : tickets) {
+                String seat = ticket.getSeat();
+                int index = optionList.indexOf(seat);
+                absOffsetList.add(index);
+            }
+            log.info("座位绝对偏移值：{}", absOffsetList);
+            // 计算相对偏移值
+            ArrayList<Integer> relOffsetList = new ArrayList<>();
+            for (Integer i : absOffsetList) {
+                relOffsetList.add(i - absOffsetList.get(0));
+            }
+            log.info("座位相对偏移值(与第一个座位的偏移值)：{}", relOffsetList);
+        }else{
+            log.info("本次无选择座位,数据为:{}", tickets);
+        }
+
+        // 每车厢循环获取座位是否可选
 
             // 多个选座应该在同一车箱
 
