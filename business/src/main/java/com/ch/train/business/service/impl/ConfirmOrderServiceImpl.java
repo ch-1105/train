@@ -2,6 +2,7 @@ package com.ch.train.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,14 +10,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.train.business.domain.ConfirmOrder;
 import com.ch.train.business.domain.DailyTrainTicket;
 import com.ch.train.business.enums.ConfirmOrderStatusEnum;
+import com.ch.train.business.enums.SeatTypeEnum;
 import com.ch.train.business.mapper.ConfirmOrderMapper;
 import com.ch.train.business.request.ConfirmOrderQueryRequest;
 import com.ch.train.business.request.ConfirmOrderSaveRequest;
+import com.ch.train.business.request.ConfirmOrderTicketRequest;
 import com.ch.train.business.response.ConfirmOrderQueryResponse;
 import com.ch.train.business.service.ConfirmOrderService;
 import com.ch.train.business.service.DailyTrainTicketService;
 import com.ch.train.common.context.LoginMemberContext;
 import com.ch.train.common.response.PageResponse;
+import com.ch.train.common.utils.GlobalException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -69,8 +73,13 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         DailyTrainTicket dailyTrainTicket =
                 dailyTrainTicketService.selectByUnique(trainCode, date, start, end);
         log.info("余票信息：{}", dailyTrainTicket);
+        for (ConfirmOrderTicketRequest ticket: request.getTickets()) {
+            String seatTypeCode = ticket.getSeatTypeCode();
+            SeatTypeEnum seatTypeEnum = EnumUtil.getBy(SeatTypeEnum::getCode, seatTypeCode);
+            reduceTicket(seatTypeEnum, dailyTrainTicket);
+        }
         // 选座
-
+        
             // 每车厢循环获取座位是否可选
 
             // 多个选座应该在同一车箱
@@ -81,6 +90,41 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             // 余票表更新状态
             // 订单表更新状态
         return true;
+    }
+
+    private static void reduceTicket(SeatTypeEnum seatTypeEnum, DailyTrainTicket dailyTrainTicket) {
+        switch (seatTypeEnum) {
+            //jdk17写法
+            case YDZ->{
+                int countYdz = dailyTrainTicket.getYdz() - 1;
+                if (countYdz <0) {
+                    throw new GlobalException("YDZ余票不足");
+                }
+                dailyTrainTicket.setYdz(countYdz);
+            }
+
+            case EDZ->{
+                int countEdz = dailyTrainTicket.getEdz() - 1;
+                if (countEdz <0) {
+                    throw new GlobalException("EDZ余票不足");
+                }
+                dailyTrainTicket.setEdz(countEdz);
+            }
+            case RW->{
+                int countRw = dailyTrainTicket.getRw() - 1;
+                if (countRw <0) {
+                    throw new GlobalException("RW余票不足");
+                }
+                dailyTrainTicket.setRw(countRw);
+            }
+            case YW->{
+                int countYw = dailyTrainTicket.getYw() - 1;
+                if (countYw <0) {
+                    throw new GlobalException("YW余票不足");
+                }
+                dailyTrainTicket.setYw(countYw);
+            }
+        }
     }
 
     @Override
