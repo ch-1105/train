@@ -158,6 +158,7 @@ import {notification} from "ant-design-vue";
             passengerName: item.name,
             passengerIdCard: item.idCard,
             seatTypeCode: seatTypes[0].key,
+            seat: "C1",
           });
         })
       }, {immediate: true});
@@ -185,6 +186,24 @@ import {notification} from "ant-design-vue";
           notification.error({ description: "超出购票限制" });
           return;
         }
+
+        // 校验余票,这里需要使用临时变量
+        let copySeatTypes = Tool.copy(seatTypes);
+        for (let i = 0; i < tickets.value.length; i++) {
+          let ticket = tickets.value[i];
+          for (let j = 0; j < copySeatTypes.length; j++) {
+            let seatType = copySeatTypes[j];
+            // 当前选中车票类型与座位类型匹配，则减掉余票
+            if (ticket.seatTypeCode === seatType.key){
+              seatType.count--;
+              if (seatType.count < 0){
+                notification.error({ description: "当前座位类型余票不足" });
+                return;
+              }
+            }
+          }
+        }
+        notification.success({ description: "校验通过" });
         open.value = true;
       }
       const showFirstImageCodeModal = () => {
