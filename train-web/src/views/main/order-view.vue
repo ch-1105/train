@@ -84,6 +84,23 @@
           </span>
           </a-col>
         </a-row>
+
+        <br/>
+        <div v-if="chooseSeatType === 0" style="color: red;">
+          您购买的车票不支持选座
+          <div>12306规则：只有全部是一等座或全部是二等座才支持选座</div>
+          <div>12306规则：余票小于一定数量时，不允许选座（本项目以20为例）</div>
+        </div>
+        <div v-else style="text-align: center">
+          <a-switch class="choose-seat-item" v-for="item in SEAT_COL_ARRAY" :key="item.key"
+                    v-model:checked="chooseSeatObj[item.key + '1']" :checked-children="item.value" :un-checked-children="item.value" />
+          <div v-if="tickets.length > 1">
+            <a-switch class="choose-seat-item" v-for="item in SEAT_COL_ARRAY" :key="item.key"
+                      v-model:checked="chooseSeatObj[item.key + '2']" :checked-children="item.value" :un-checked-children="item.value" />
+          </div>
+          <div style="color: #999999">提示：您可以选择{{tickets.length}}个座位</div>
+        </div>
+        <br>
       </div>
     </a-modal>
     
@@ -158,7 +175,6 @@ import {notification} from "ant-design-vue";
             passengerName: item.name,
             passengerIdCard: item.idCard,
             seatTypeCode: seatTypes[0].key,
-            seat: "C1",
           });
         })
       }, {immediate: true});
@@ -274,6 +290,9 @@ import {notification} from "ant-design-vue";
         open,
         showFirstImageCodeModal,
         finishCheckPassenger,
+        chooseSeatObj,
+        SEAT_COL_ARRAY,
+        chooseSeatType,
       };
     },
   });
