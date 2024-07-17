@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.train.business.domain.ConfirmOrder;
+import com.ch.train.business.domain.DailyTrainCarriage;
+import com.ch.train.business.domain.DailyTrainSeat;
 import com.ch.train.business.domain.DailyTrainTicket;
 import com.ch.train.business.enums.ConfirmOrderStatusEnum;
 import com.ch.train.business.enums.SeatColEnum;
@@ -19,6 +21,8 @@ import com.ch.train.business.request.ConfirmOrderSaveRequest;
 import com.ch.train.business.request.ConfirmOrderTicketRequest;
 import com.ch.train.business.response.ConfirmOrderQueryResponse;
 import com.ch.train.business.service.ConfirmOrderService;
+import com.ch.train.business.service.DailyTrainCarriageService;
+import com.ch.train.business.service.DailyTrainSeatService;
 import com.ch.train.business.service.DailyTrainTicketService;
 import com.ch.train.common.context.LoginMemberContext;
 import com.ch.train.common.response.PageResponse;
@@ -43,6 +47,10 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
     private ConfirmOrderMapper confirmOrderMapper;
     @Resource
     private DailyTrainTicketService dailyTrainTicketService;
+    @Resource
+    private DailyTrainCarriageService dailyTrainCarriageService;
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
 
     @Override
     public void save(ConfirmOrderSaveRequest request) {
@@ -108,9 +116,22 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             for (Integer i : absOffsetList) {
                 relOffsetList.add(i - absOffsetList.get(0));
             }
+            getSeat(trainCode,
+                    date,
+                    ticketReq0.getSeatTypeCode(),
+                    ticketReq0.getSeat().split("")[0], //这里将A1 取A
+                    relOffsetList);
             log.info("座位相对偏移值(与第一个座位的偏移值)：{}", relOffsetList);
         }else{
             log.info("本次无选择座位,数据为:{}", tickets);
+            // 没选座,所以循环车票获取类型
+            for (ConfirmOrderTicketRequest ticket: tickets) {
+                getSeat(trainCode,
+                        date,
+                        ticket.getSeatTypeCode(),
+                        null,// 没有选座
+                        null);
+            }
         }
 
         // 每车厢循环获取座位是否可选
@@ -181,6 +202,20 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         pageResponse.setList(list);
         return pageResponse;
     }
+
+    private DailyTrainSeat getSeat(String trainCode, Date date,String seatType,String column,List<Integer> offSetList){
+        List<DailyTrainCarriage> carriages = dailyTrainCarriageService.getByTrainType(trainCode, date, seatType);
+        log.info("获取车箱数量：{}", carriages.size());
+        for (DailyTrainCarriage carriage : carriages) {
+            log.info("几号车厢开始选座：{}", carriage.getCarriageIndex());
+            List<DailyTrainSeat> seats =
+                    dailyTrainSeatService.getByTrainCarriageIndex(trainCode, date, carriage.getCarriageIndex());
+            log.info("车箱座位数量：{}", seats.size());
+        }
+        return new DailyTrainSeat();
+
+    }
+
     @Override
     public void delete(Long id) {
         confirmOrderMapper.deleteById(id);

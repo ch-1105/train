@@ -134,4 +134,13 @@ public class DailyTrainSeatServiceImpl extends ServiceImpl<DailyTrainSeatMapper,
         return count.intValue();
     }
 
+    @Override
+    public List<DailyTrainSeat> getByTrainCarriageIndex(String trainCode, Date date,
+                                                        Integer carriageIndex) {
+        QueryWrapper<DailyTrainSeat> wrapper = new QueryWrapper<>();
+        wrapper.eq("train_code", trainCode);
+        wrapper.eq("carriage_index", carriageIndex);
+        wrapper.eq("date", date);
+        return dailyTrainSeatMapper.selectList(wrapper);
+    }
 }

@@ -9,6 +9,7 @@ import com.ch.train.business.response.DailyTrainSeatQueryResponse;
 import com.ch.train.common.response.PageResponse;
 
 import java.util.Date;
+import java.util.List;
 
 public interface DailyTrainSeatService extends IService<DailyTrainSeat>{
 
@@ -21,4 +22,7 @@ public interface DailyTrainSeatService extends IService<DailyTrainSeat>{
     void generateDailyTrainCode(Date date, String trainCode);
 
     Integer countSeatBySeatType(Date date, String trainCode, String seatType);
+
+    List<DailyTrainSeat> getByTrainCarriageIndex(String trainCode, Date date,
+                                                 Integer carriageIndex);
 }

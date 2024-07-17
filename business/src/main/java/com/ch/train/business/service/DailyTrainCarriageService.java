@@ -8,6 +8,9 @@ import com.ch.train.business.response.DailyTrainCarriageQueryResponse;
 
 import com.ch.train.common.response.PageResponse;
 
+import java.util.Date;
+import java.util.List;
+
 public interface DailyTrainCarriageService extends IService<DailyTrainCarriage>{
 
     void save(DailyTrainCarriageSaveRequest request);
@@ -15,4 +18,6 @@ public interface DailyTrainCarriageService extends IService<DailyTrainCarriage>{
     PageResponse<DailyTrainCarriageQueryResponse> queryList(DailyTrainCarriageQueryRequest request);
 
     void delete(Long id);
+
+    List<DailyTrainCarriage> getByTrainType(String trainCode, Date date, String seatType);
 }
