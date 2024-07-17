@@ -316,6 +316,23 @@ import {notification} from "ant-design-vue";
         }
 
         console.log("最终购票：", tickets.value);
+
+        axios.post("/passenger/confirm-order/save", {
+          dailyTrainTicketId: dailyTrainTicket.value.id,
+          tickets: tickets.value,
+          date: dailyTrainTicket.value.date,
+          end: dailyTrainTicket.value.end,
+          start: dailyTrainTicket.value.start,
+          trainCode: dailyTrainTicket.value.trainCode,
+
+        }).then((response) => {
+          let data = response.data;
+          if (data.code === 200) {
+            notification.success({description: data.message});
+          } else {
+            notification.error({description: data.message});
+          }
+        });
       }
       const showFirstImageCodeModal = () => {
         open.value = false;

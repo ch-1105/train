@@ -44,6 +44,28 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             confirmOrderMapper.updateById(confirmOrder);
         }
     }
+
+    private boolean orderTicket(ConfirmOrderSaveRequest request) {
+        // 业务校验 判断票数>0 车票、车次、座位存在，且车票、车次、座位状态为可用 乘车人是否购买过同一张票等
+
+        // 获取余票
+
+        // 预扣存
+
+        // 选座
+
+            // 每车厢循环获取座位是否可选
+
+            // 多个选座应该在同一车箱
+
+        // 选中后事务
+
+            // 座位表更新数量
+            // 余票表更新状态
+            // 订单表更新状态
+        return true;
+    }
+
     @Override
     public PageResponse<ConfirmOrderQueryResponse> queryList(ConfirmOrderQueryRequest request) {
         QueryWrapper<ConfirmOrder> confirmOrderWrapper = new QueryWrapper<>();
