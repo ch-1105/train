@@ -35,7 +35,7 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(request, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
-            Station stationDB = getUnionStation(station.getName());
+            Station stationDB = getUniqueStation(station.getName());
             if (ObjectUtil.isNotNull(stationDB)) {
                 throw new GlobalException(1002,"该车站已存在");
             }
@@ -49,7 +49,7 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         }
     }
 
-    private Station getUnionStation(String name) {
+    private Station getUniqueStation(String name) {
         QueryWrapper<Station> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("name", name);
         List<Station> list = stationMapper.selectList(queryWrapper);

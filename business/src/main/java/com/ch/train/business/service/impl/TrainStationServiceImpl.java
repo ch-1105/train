@@ -35,11 +35,11 @@ public class TrainStationServiceImpl extends ServiceImpl<TrainStationMapper, Tra
         DateTime now = DateTime.now();
         TrainStation trainStation = BeanUtil.copyProperties(request, TrainStation.class);
         if (ObjectUtil.isNull(trainStation.getId())) {
-            TrainStation unionTrainStation = getUnionTrainStation(request.getTrainCode(), request.getName());
+            TrainStation unionTrainStation = getUniqueTrainStation(request.getTrainCode(), request.getName());
             if (ObjectUtil.isNotNull(unionTrainStation)) {
                 throw new GlobalException(1002, "该火车站点及站名已存在");
             }
-            unionTrainStation = getUnionTrainStation(request.getTrainCode(), request.getStationIndex());
+            unionTrainStation = getUniqueTrainStation(request.getTrainCode(), request.getStationIndex());
             if (ObjectUtil.isNotNull(unionTrainStation)) {
                 throw new GlobalException(1002, "该火车站点及站序已存在");
             }
@@ -78,7 +78,7 @@ public class TrainStationServiceImpl extends ServiceImpl<TrainStationMapper, Tra
         trainStationMapper.deleteById(id);
     }
 
-    private TrainStation getUnionTrainStation(String trainCode,String name) {
+    private TrainStation getUniqueTrainStation(String trainCode,String name) {
         QueryWrapper<TrainStation> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("train_code", trainCode);
         queryWrapper.eq("name", name);
@@ -89,7 +89,7 @@ public class TrainStationServiceImpl extends ServiceImpl<TrainStationMapper, Tra
         return list.get(0);
     }
 
-    private TrainStation getUnionTrainStation(String name,Integer stationIndex) {
+    private TrainStation getUniqueTrainStation(String name,Integer stationIndex) {
         QueryWrapper<TrainStation> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("name", name);
         queryWrapper.eq("station_index", stationIndex);

@@ -36,7 +36,7 @@ public class TrainServiceImpl extends ServiceImpl<TrainMapper, Train> implements
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(request, Train.class);
         if (ObjectUtil.isNull(train.getId())) {
-            Train unionTrain = getUnionTrain(train.getCode());
+            Train unionTrain = getUniqueTrain(train.getCode());
             if (ObjectUtil.isNotNull(unionTrain)) {
                 throw new GlobalException(1002, "车次已存在");
             }
@@ -89,7 +89,7 @@ public class TrainServiceImpl extends ServiceImpl<TrainMapper, Train> implements
         return trainMapper.selectList(trainWrapper);
     }
 
-    private Train getUnionTrain(String code) {
+    private Train getUniqueTrain(String code) {
         QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("code", code);
         List<Train> list = trainMapper.selectList(queryWrapper);

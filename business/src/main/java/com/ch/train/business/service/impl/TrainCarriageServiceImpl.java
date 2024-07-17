@@ -49,7 +49,7 @@ public class TrainCarriageServiceImpl extends ServiceImpl<TrainCarriageMapper, T
         trainCarriage.setColCount(colCount);
 
         if (ObjectUtil.isNull(trainCarriage.getId())) {
-            TrainCarriage unionTrainCarriage = getUnionTrainCarriage(request.getTrainCode(), String.valueOf(request.getCarriageIndex()));
+            TrainCarriage unionTrainCarriage = getUniqueTrainCarriage(request.getTrainCode(), String.valueOf(request.getCarriageIndex()));
             if (ObjectUtil.isNotNull(unionTrainCarriage)) {
                 throw new GlobalException(1002,"车厢已经存在");
             }
@@ -90,7 +90,7 @@ public class TrainCarriageServiceImpl extends ServiceImpl<TrainCarriageMapper, T
         trainCarriageMapper.deleteById(id);
     }
 
-    private TrainCarriage getUnionTrainCarriage(String trainCode,String carriageIndex) {
+    private TrainCarriage getUniqueTrainCarriage(String trainCode,String carriageIndex) {
         QueryWrapper<TrainCarriage> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("train_code", trainCode);
         queryWrapper.eq("carriage_index", carriageIndex);
