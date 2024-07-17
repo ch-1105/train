@@ -317,13 +317,13 @@ import {notification} from "ant-design-vue";
 
         console.log("最终购票：", tickets.value);
 
-        axios.post("/passenger/confirm-order/save", {
-          dailyTrainTicketId: dailyTrainTicket.value.id,
+        axios.post("/business/passenger/confirm-order/save", {
+          dailyTrainTicketId: dailyTrainTicket.id,
           tickets: tickets.value,
-          date: dailyTrainTicket.value.date,
-          end: dailyTrainTicket.value.end,
-          start: dailyTrainTicket.value.start,
-          trainCode: dailyTrainTicket.value.trainCode,
+          date: dailyTrainTicket.date,
+          end: dailyTrainTicket.end,
+          start: dailyTrainTicket.start,
+          trainCode: dailyTrainTicket.trainCode,
 
         }).then((response) => {
           let data = response.data;

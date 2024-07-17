@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class ConfirmOrderSaveRequest {
 
-    @NotNull(message = "【会员id】不能为空")
+//    @NotNull(message = "【会员id】不能为空")
     private Long memberId;
 
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
@@ -30,6 +30,6 @@ public class ConfirmOrderSaveRequest {
     @NotNull(message = "【余票ID】不能为空")
     private Long dailyTrainTicketId;
 
-    @NotBlank(message = "【车票】不能为空")
+    @NotNull(message = "【车票】不能为空")
     private List<ConfirmOrderTicketRequest> tickets;
 }
