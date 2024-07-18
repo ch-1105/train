@@ -1,6 +1,7 @@
 package com.ch.train.business.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.IdUtil;
@@ -221,13 +222,63 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             List<DailyTrainSeat> seats =
                     dailyTrainSeatService.getByTrainCarriageIndex(trainCode, date, carriage.getCarriageIndex());
             log.info("车箱座位数量：{}", seats.size());
+            boolean checkAllSeat = true;
             for (DailyTrainSeat seat : seats) {
+                // 判断列号进行选座
+                boolean blank = StrUtil.isBlank(column);
+                String col = seat.getCol();
+                Integer seatIndex = seat.getCarriageSeatIndex();
+                if (blank) {
+                    log.info("当前选择座位列号为空，直接返回：{}", seat);
+                }else{
+                    // 不等于时直接跳过
+                    if (!StrUtil.equals(col, column)) {
+                        log.info("当前座位列号不匹配，跳过：{}", seat.getCol());
+                        continue;
+                    }
+                }
+
                 boolean isCheck = checkSeat(seat,start,
                         end);
                 if (isCheck) {
                     log.info("座位可售：{}", seat);
-                    return seat;
+//                    return seat;
                 }else {
+                }
+
+                // 根据相对偏移值进行选座
+                if (CollUtil.isNotEmpty(offSetList)) {
+                    log.info("当前需要选择的偏移值列表：{}", offSetList);
+                    for (int i = 1; i < offSetList.size(); i++) {//从1开始 0是当前座位
+                        int offset = offSetList.get(i);
+                        //所以这里-1是为了让相对位置的座位从1开始,因为这里是0开始,座位index是1开始
+                        int nextSeat = seatIndex + offset - 1;
+                        // 获取相对位置的座位
+                        if (nextSeat > seats.size() - 1) {
+                            log.info("座位超出范围，跳过：{}", nextSeat);
+                            checkAllSeat = false;
+                            break;
+                        }
+
+                        DailyTrainSeat dailyTrainSeat = seats.get(nextSeat);
+                        // 判断列号进行选座
+                        boolean nextCheck = checkSeat(dailyTrainSeat,start,
+                                end);
+                        if (nextCheck) {
+                            log.info("下一个座位可售：{}", dailyTrainSeat);
+                            return dailyTrainSeat;
+                        }else {
+                            log.info("下一个座位不可选：{}", dailyTrainSeat);
+                            checkAllSeat = false;
+                        }
+                    }
+                }
+
+                if (!checkAllSeat) {
+                    continue;
+                }else {
+                    // 保存当前选好的座位
+                    return seat;
                 }
             }
         }
