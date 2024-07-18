@@ -54,6 +54,9 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
 
+    @Resource
+    private AfterConfirmOrderService afterConfirmOrderService;
+
     @Override
     public void save(ConfirmOrderSaveRequest request) {
         orderTicket(request);
@@ -145,12 +148,8 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         }
         log.info("最终选座信息：{}", systemChooseedList);
 
-
-        // 选中后事务
-
-            // 座位表更新数量
-            // 余票表更新状态
-            // 订单表更新状态
+        // 更新数据库
+        afterConfirmOrderService.doConfirmOrder(systemChooseedList);
         return true;
     }
 
