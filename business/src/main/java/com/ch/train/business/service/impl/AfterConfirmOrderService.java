@@ -1,13 +1,18 @@
 package com.ch.train.business.service.impl;
 
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.IdUtil;
+import com.ch.train.business.domain.ConfirmOrder;
 import com.ch.train.business.domain.DailyTrainSeat;
 import com.ch.train.business.domain.DailyTrainTicket;
+import com.ch.train.business.feign.MemberFeign;
 import com.ch.train.business.mapper.ConfirmOrderMapper;
 import com.ch.train.business.mapper.CustomizedDailyTrainTicketMapper;
 import com.ch.train.business.mapper.DailyTrainSeatMapper;
+import com.ch.train.business.request.ConfirmOrderTicketRequest;
 import com.ch.train.business.service.ConfirmOrderService;
 import com.ch.train.business.service.DailyTrainTicketService;
+import com.ch.train.common.request.MemberTicketRequest;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +34,21 @@ public class AfterConfirmOrderService{
     private CustomizedDailyTrainTicketMapper customizedDailyTrainTicketMapper;
     @Resource
     private DailyTrainSeatMapper dailyTrainSeatMapper;
+    @Resource
+    private MemberFeign memberFeign;
 
     // 选中后事务
         // 座位表更新数量
         // 余票表更新状态
         // 订单表更新状态
     @Transactional
-    public void doConfirmOrder(DailyTrainTicket ticket, List<DailyTrainSeat> systemChooseedList) {
+    public void doConfirmOrder(DailyTrainTicket ticket,
+                               List<DailyTrainSeat> systemChooseedList,
+                               List<ConfirmOrderTicketRequest> tickets,
+                               ConfirmOrder confirmOrder
+    ) {
+        int j = 0 ;
+        DateTime now = DateTime.now();
         for (DailyTrainSeat dailyTrainSeat : systemChooseedList) {
             Long id = dailyTrainSeat.getId();
             String sell = dailyTrainSeat.getSell();
@@ -83,19 +96,35 @@ public class AfterConfirmOrderService{
             }
             log.info("当前初始区间 : 起始站:{}, 终点站:{}", maxStartIndex, minEndIndex);
             log.info("当前计算区间 : 起始站:{}, 终点站:{}", minStartIndex, maxEndIndex);
-            try {
-                customizedDailyTrainTicketMapper.upCountBySell(
-                        ticket.getDate(),
-                        ticket.getTrainCode(),
-                        dailyTrainSeat.getSeatType(),
-                        minStartIndex,
-                        maxStartIndex,
-                        minEndIndex,
-                        maxEndIndex);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
+
+            customizedDailyTrainTicketMapper.upCountBySell(
+                    ticket.getDate(),
+                    ticket.getTrainCode(),
+                    dailyTrainSeat.getSeatType(),
+                    minStartIndex,
+                    maxStartIndex,
+                    minEndIndex,
+                    maxEndIndex);
+            // 更新余票状态
+            MemberTicketRequest memberTicketRequest = new MemberTicketRequest();
+            memberTicketRequest.setId(IdUtil.getSnowflakeNextId());
+            memberTicketRequest.setMemberId(confirmOrder.getMemberId());
+            memberTicketRequest.setPassengerId(tickets.get(j).getPassengerId());
+            memberTicketRequest.setPassengerName(tickets.get(j).getPassengerName());
+            memberTicketRequest.setTrainDate(ticket.getDate());
+            memberTicketRequest.setTrainCode(ticket.getTrainCode());
+            memberTicketRequest.setCarriageIndex(dailyTrainSeat.getCarriageIndex());
+            memberTicketRequest.setSeatRow(dailyTrainSeat.getRow());
+            memberTicketRequest.setSeatCol(dailyTrainSeat.getCol());
+            memberTicketRequest.setStartStation(ticket.getStart());
+            memberTicketRequest.setStartTime(ticket.getStartTime());
+            memberTicketRequest.setEndStation(ticket.getEnd());
+            memberTicketRequest.setEndTime(ticket.getEndTime());
+            memberTicketRequest.setSeatType(dailyTrainSeat.getSeatType());
+            memberTicketRequest.setCreateTime(now);
+            memberTicketRequest.setUpdateTime(now);
+            memberFeign.save(memberTicketRequest);
+            j++;
         }
     }
 }

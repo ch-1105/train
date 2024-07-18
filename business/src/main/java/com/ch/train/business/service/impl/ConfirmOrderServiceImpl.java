@@ -149,7 +149,7 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         log.info("最终选座信息：{}", systemChooseedList);
 
         // 更新数据库
-        afterConfirmOrderService.doConfirmOrder(dailyTrainTicket,systemChooseedList);
+        afterConfirmOrderService.doConfirmOrder(dailyTrainTicket,systemChooseedList,tickets,confirmOrder);
         return true;
     }
 

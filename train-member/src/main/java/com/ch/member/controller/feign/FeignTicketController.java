@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/member/ticket")
+@RequestMapping("/ticket")
 public class FeignTicketController {
 
     @Resource
