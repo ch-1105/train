@@ -141,6 +141,7 @@ public class DailyTrainSeatServiceImpl extends ServiceImpl<DailyTrainSeatMapper,
         wrapper.eq("train_code", trainCode);
         wrapper.eq("carriage_index", carriageIndex);
         wrapper.eq("date", date);
+        wrapper.orderByAsc("carriage_seat_index");
         return dailyTrainSeatMapper.selectList(wrapper);
     }
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -120,7 +121,9 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
                     date,
                     ticketReq0.getSeatTypeCode(),
                     ticketReq0.getSeat().split("")[0], //这里将A1 取A
-                    relOffsetList);
+                    relOffsetList,
+                    dailyTrainTicket.getStartIndex(),
+                    dailyTrainTicket.getEndIndex());
             log.info("座位相对偏移值(与第一个座位的偏移值)：{}", relOffsetList);
         }else{
             log.info("本次无选择座位,数据为:{}", tickets);
@@ -130,7 +133,9 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
                         date,
                         ticket.getSeatTypeCode(),
                         null,// 没有选座
-                        null);
+                        null,
+                        dailyTrainTicket.getStartIndex(),
+                        dailyTrainTicket.getEndIndex());
             }
         }
 
@@ -203,7 +208,12 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         return pageResponse;
     }
 
-    private DailyTrainSeat getSeat(String trainCode, Date date,String seatType,String column,List<Integer> offSetList){
+    private DailyTrainSeat getSeat(String trainCode,
+                                   Date date,String seatType,
+                                   String column,
+                                   List<Integer> offSetList,
+                                   int start,
+                                   int end){
         List<DailyTrainCarriage> carriages = dailyTrainCarriageService.getByTrainType(trainCode, date, seatType);
         log.info("获取车箱数量：{}", carriages.size());
         for (DailyTrainCarriage carriage : carriages) {
@@ -211,9 +221,52 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             List<DailyTrainSeat> seats =
                     dailyTrainSeatService.getByTrainCarriageIndex(trainCode, date, carriage.getCarriageIndex());
             log.info("车箱座位数量：{}", seats.size());
+            for (DailyTrainSeat seat : seats) {
+                boolean isCheck = checkSeat(seat,start,
+                        end);
+                if (isCheck) {
+                    log.info("座位可售：{}", seat);
+                    return seat;
+                }else {
+                }
+            }
         }
         return new DailyTrainSeat();
 
+    }
+
+    /**
+     * 计算座位在某区间是否可选 sell为0可选 1不可选
+     * @date 2024/7/18 8:42
+     * @param dailyTrainSeat
+     * @return boolean
+     */
+    private boolean checkSeat(DailyTrainSeat dailyTrainSeat,int start,int end){
+        String sell = dailyTrainSeat.getSell();
+        String sellPart = sell.substring(start, end);
+        if (Integer.parseInt(sellPart) > 0){
+            log.info("座位不可选 : 座位：{} - 区间 {} -> {}", dailyTrainSeat,start,end);
+            return false;
+        } else{
+            log.info("座位可选 : 座位：{} - 区间 {} -> {}", dailyTrainSeat,start,end);
+            String currentSell = sellPart.replace("0", "1");
+            currentSell = StrUtil.fillBefore(currentSell, '0', end);
+            currentSell = StrUtil.fillAfter(currentSell, '0', sell.length());
+            int temp = NumberUtil.binaryToInt(currentSell) | NumberUtil.binaryToInt(sell);
+            String newSell = NumberUtil.getBinaryStr(temp);
+            // 全1的情况下补全首位0
+            newSell = StrUtil.fillBefore(newSell, '0', sell.length());
+            log.info("座位可选 : 座位：{} - 区间 {} -> {} - 计算后售票信息：{}", dailyTrainSeat,start,end,newSell);
+            dailyTrainSeat.setSell(newSell);
+            return true;
+        }
+    }
+
+    public static void main(String[] args) {
+        DailyTrainSeat dailyTrainSeat = new DailyTrainSeat();
+        dailyTrainSeat.setSell("000000");
+        ConfirmOrderServiceImpl impl = new ConfirmOrderServiceImpl();
+        boolean b = impl.checkSeat(dailyTrainSeat, 1, 4);
     }
 
     @Override
