@@ -3,15 +3,14 @@ package com.ch.member.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.member.domain.Ticket;
 import com.ch.member.mapper.TicketMapper;
 import com.ch.member.request.TicketQueryRequest;
-import com.ch.member.request.TicketSaveRequest;
 import com.ch.member.response.TicketQueryResponse;
 import com.ch.member.service.TicketService;
+import com.ch.train.common.request.MemberTicketRequest;
 import com.ch.train.common.response.PageResponse;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -31,18 +30,13 @@ public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket> impleme
     private TicketMapper ticketMapper;
 
     @Override
-    public void save(TicketSaveRequest request) {
+    public void save(MemberTicketRequest request) {
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(request, Ticket.class);
-        if (ObjectUtil.isNull(ticket.getId())) {
-            ticket.setId(IdUtil.getSnowflakeNextId());
-            ticket.setCreateTime(now);
-            ticket.setUpdateTime(now);
-            ticketMapper.insert(ticket);
-        } else {
-            ticket.setUpdateTime(now);
-            ticketMapper.updateById(ticket);
-        }
+        ticket.setId(IdUtil.getSnowflakeNextId());
+        ticket.setCreateTime(now);
+        ticket.setUpdateTime(now);
+        ticketMapper.insert(ticket);
     }
     @Override
     public PageResponse<TicketQueryResponse> queryList(TicketQueryRequest request) {
