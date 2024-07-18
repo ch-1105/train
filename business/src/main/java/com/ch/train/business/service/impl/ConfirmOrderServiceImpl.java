@@ -149,7 +149,7 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         log.info("最终选座信息：{}", systemChooseedList);
 
         // 更新数据库
-        afterConfirmOrderService.doConfirmOrder(systemChooseedList);
+        afterConfirmOrderService.doConfirmOrder(dailyTrainTicket,systemChooseedList);
         return true;
     }
 
@@ -262,6 +262,10 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
                 if (isChoose) {
                     log.info("座位可售：{}", seat);
                     tempChooseList.add(seat);
+                }else {
+                    log.info("座位不可售：{}", seat);
+                    chooseAllSeat = false;
+                    break;
                 }
                 // 根据相对偏移值进行选座
                 if (CollUtil.isNotEmpty(offSetList)) {

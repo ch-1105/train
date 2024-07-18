@@ -1,7 +1,7 @@
 package com.ch.train.business.mapper;
 
-import com.ch.train.business.domain.DailyTrainTicket;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.ch.train.business.domain.DailyTrainTicket;
 
 /**
 * @author ch051
