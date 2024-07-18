@@ -5,6 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import com.ch.train.business.domain.ConfirmOrder;
 import com.ch.train.business.domain.DailyTrainSeat;
 import com.ch.train.business.domain.DailyTrainTicket;
+import com.ch.train.business.enums.ConfirmOrderStatusEnum;
 import com.ch.train.business.feign.MemberFeign;
 import com.ch.train.business.mapper.ConfirmOrderMapper;
 import com.ch.train.business.mapper.CustomizedDailyTrainTicketMapper;
@@ -125,6 +126,9 @@ public class AfterConfirmOrderService{
             memberTicketRequest.setUpdateTime(now);
             memberFeign.save(memberTicketRequest);
             j++;
+
+            confirmOrder.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
+            confirmOrderMapper.updateById(confirmOrder);
         }
     }
 }
