@@ -69,6 +69,8 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         String end = request.getEnd();
         List<ConfirmOrderTicketRequest> tickets = request.getTickets();
 
+        List<DailyTrainSeat> systemChooseedList = new ArrayList<>();
+
         // 获取余票
         ConfirmOrder confirmOrder = new ConfirmOrder();
         confirmOrder.setId(IdUtil.getSnowflakeNextId());
@@ -118,7 +120,8 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             for (Integer i : absOffsetList) {
                 relOffsetList.add(i - absOffsetList.get(0));
             }
-            getSeat(trainCode,
+            getSeat(systemChooseedList,
+                    trainCode,
                     date,
                     ticketReq0.getSeatTypeCode(),
                     ticketReq0.getSeat().split("")[0], //这里将A1 取A
@@ -130,7 +133,8 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             log.info("本次无选择座位,数据为:{}", tickets);
             // 没选座,所以循环车票获取类型
             for (ConfirmOrderTicketRequest ticket: tickets) {
-                getSeat(trainCode,
+                getSeat(systemChooseedList,
+                        trainCode,
                         date,
                         ticket.getSeatTypeCode(),
                         null,// 没有选座
@@ -139,10 +143,8 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
                         dailyTrainTicket.getEndIndex());
             }
         }
+        log.info("最终选座信息：{}", systemChooseedList);
 
-        // 每车厢循环获取座位是否可选
-
-            // 多个选座应该在同一车箱
 
         // 选中后事务
 
@@ -209,20 +211,25 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         return pageResponse;
     }
 
-    private DailyTrainSeat getSeat(String trainCode,
+    private List<DailyTrainSeat> getSeat(List<DailyTrainSeat> systemChooseedList,
+                                   String trainCode,
                                    Date date,String seatType,
                                    String column,
                                    List<Integer> offSetList,
                                    int start,
                                    int end){
+        List<DailyTrainSeat> tempChooseList;
         List<DailyTrainCarriage> carriages = dailyTrainCarriageService.getByTrainType(trainCode, date, seatType);
         log.info("获取车箱数量：{}", carriages.size());
+        // 每车厢循环获取座位是否可选
+        // 多个选座应该在同一车箱
         for (DailyTrainCarriage carriage : carriages) {
+            tempChooseList = new ArrayList<>();
             log.info("几号车厢开始选座：{}", carriage.getCarriageIndex());
             List<DailyTrainSeat> seats =
                     dailyTrainSeatService.getByTrainCarriageIndex(trainCode, date, carriage.getCarriageIndex());
             log.info("车箱座位数量：{}", seats.size());
-            boolean checkAllSeat = true;
+            boolean chooseAllSeat = true;
             for (DailyTrainSeat seat : seats) {
                 // 判断列号进行选座
                 boolean blank = StrUtil.isBlank(column);
@@ -238,14 +245,25 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
                     }
                 }
 
-                boolean isCheck = checkSeat(seat,start,
-                        end);
-                if (isCheck) {
-                    log.info("座位可售：{}", seat);
-//                    return seat;
-                }else {
+                // 判断当前座位是否被选择
+                boolean systemChoosed = false;
+                for (DailyTrainSeat dailyTrainSeat : systemChooseedList) {
+                    if (seat.getId().equals(dailyTrainSeat.getId())){
+                        log.info("座位已被选择，跳过：{}", seat);
+                        systemChoosed = true;
+                        break;
+                    }
                 }
-
+                if (systemChoosed) {
+                    log.info("座位已被选择，跳过");
+                    continue;
+                }
+                boolean isChoose = chooseSeat(seat,start,
+                        end);
+                if (isChoose) {
+                    log.info("座位可售：{}", seat);
+                    tempChooseList.add(seat);
+                }
                 // 根据相对偏移值进行选座
                 if (CollUtil.isNotEmpty(offSetList)) {
                     log.info("当前需要选择的偏移值列表：{}", offSetList);
@@ -256,34 +274,32 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
                         // 获取相对位置的座位
                         if (nextSeat > seats.size() - 1) {
                             log.info("座位超出范围，跳过：{}", nextSeat);
-                            checkAllSeat = false;
+                            chooseAllSeat = false;
                             break;
                         }
 
                         DailyTrainSeat dailyTrainSeat = seats.get(nextSeat);
                         // 判断列号进行选座
-                        boolean nextCheck = checkSeat(dailyTrainSeat,start,
+                        boolean nextChoose = chooseSeat(dailyTrainSeat,start,
                                 end);
-                        if (nextCheck) {
+                        if (nextChoose) {
                             log.info("下一个座位可售：{}", dailyTrainSeat);
-                            return dailyTrainSeat;
+                            tempChooseList.add(dailyTrainSeat);
                         }else {
                             log.info("下一个座位不可选：{}", dailyTrainSeat);
-                            checkAllSeat = false;
+                            chooseAllSeat = false;
                         }
                     }
                 }
-
-                if (!checkAllSeat) {
+                if (!chooseAllSeat) {
+                    tempChooseList.clear();
                     continue;
-                }else {
-                    // 保存当前选好的座位
-                    return seat;
                 }
+                systemChooseedList.addAll(tempChooseList);
+                return systemChooseedList;
             }
         }
-        return new DailyTrainSeat();
-
+        return null;
     }
 
     /**
@@ -292,7 +308,7 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
      * @param dailyTrainSeat
      * @return boolean
      */
-    private boolean checkSeat(DailyTrainSeat dailyTrainSeat,int start,int end){
+    private boolean chooseSeat(DailyTrainSeat dailyTrainSeat,int start,int end){
         String sell = dailyTrainSeat.getSell();
         String sellPart = sell.substring(start, end);
         if (Integer.parseInt(sellPart) > 0){
@@ -317,13 +333,11 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         DailyTrainSeat dailyTrainSeat = new DailyTrainSeat();
         dailyTrainSeat.setSell("000000");
         ConfirmOrderServiceImpl impl = new ConfirmOrderServiceImpl();
-        boolean b = impl.checkSeat(dailyTrainSeat, 1, 4);
+        boolean b = impl.chooseSeat(dailyTrainSeat, 1, 4);
     }
 
     @Override
     public void delete(Long id) {
         confirmOrderMapper.deleteById(id);
     }
-
-
 }
