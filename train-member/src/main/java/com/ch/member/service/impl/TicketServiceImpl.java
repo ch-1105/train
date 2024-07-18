@@ -3,15 +3,18 @@ package com.ch.member.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ch.member.domain.Ticket;
 import com.ch.member.mapper.TicketMapper;
+import com.ch.member.request.MemberTicketQueryRequest;
 import com.ch.member.request.TicketQueryRequest;
 import com.ch.member.response.TicketQueryResponse;
 import com.ch.member.service.TicketService;
 import com.ch.train.common.request.MemberTicketRequest;
 import com.ch.train.common.response.PageResponse;
+import com.ch.train.common.utils.GlobalException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -62,5 +65,30 @@ public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket> impleme
     @Override
     public void delete(Long id) {
         ticketMapper.deleteById(id);
+    }
+
+    @Override
+    public PageResponse<TicketQueryResponse> queryMemberList(MemberTicketQueryRequest request) {
+        QueryWrapper<Ticket> ticketWrapper = new QueryWrapper<>();
+        if (ObjectUtil.isNull(request.getMemberId())) {
+            throw new GlobalException(401, "会员ID不能为空");
+        }
+        ticketWrapper.eq("member_id", request.getMemberId());
+        ticketWrapper.orderByDesc("id");
+        log.info("查询页码：{}", request.getPageNum());
+        log.info("每页条数：{}", request.getPageSize());
+        PageHelper.startPage(request.getPageNum(), request.getPageSize());
+        List<Ticket> ticketList = ticketMapper.selectList(ticketWrapper);
+
+        PageInfo<Ticket> pageInfo = new PageInfo<>(ticketList);
+        log.info("总行数：{}", pageInfo.getTotal());
+        log.info("总页数：{}", pageInfo.getPages());
+
+        List<TicketQueryResponse> list = BeanUtil.copyToList(ticketList, TicketQueryResponse.class);
+
+        PageResponse<TicketQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setList(list);
+        return pageResponse;
     }
 }

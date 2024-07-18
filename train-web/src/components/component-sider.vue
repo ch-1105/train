@@ -21,7 +21,12 @@
       </a-menu-item>
       <a-menu-item key="/ticket">
         <router-link to="/ticket">
-          ticket
+          order-ticket
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="/my-ticket">
+        <router-link to="/my-ticket">
+          my-ticket
         </router-link>
       </a-menu-item>
     </a-menu>
