@@ -6,7 +6,7 @@
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
         v-model:selectedKeys="selectedKeys"
-        :openKeys="['train','daily']"
+        :openKeys="['member','train','daily']"
         mode="inline"
         style="height: 100%"
     >
@@ -14,7 +14,14 @@
           <router-link to="/">
             welcome
           </router-link>
-          </a-menu-item>
+        </a-menu-item>
+      <a-sub-menu key="member">
+        <a-menu-item key="/member-ticket">
+          <router-link to="/member-ticket">
+            member-ticket
+          </router-link>
+        </a-menu-item>
+      </a-sub-menu>
         <a-sub-menu key="train">
           <template #title>
                 <span>

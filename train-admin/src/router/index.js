@@ -12,6 +12,10 @@ const routes = [
         component: () => import('../views/main/welcome-page.vue')
       },
       {
+        path: '/member-ticket',
+        component: () => import('../views/main/member-ticket.vue')
+      },
+      {
         path: '/train',
         children: [
           {
