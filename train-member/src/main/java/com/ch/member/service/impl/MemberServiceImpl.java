@@ -11,7 +11,7 @@ import com.ch.member.domain.Member;
 import com.ch.member.mapper.MemberMapper;
 import com.ch.member.request.MemberLoginRequest;
 import com.ch.member.request.MemberRequest;
-import com.ch.member.responce.MemberLoginResponce;
+import com.ch.member.response.MemberLoginResponce;
 import com.ch.member.service.MemberService;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;

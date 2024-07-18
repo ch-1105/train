@@ -1,4 +1,4 @@
-package com.ch.member.responce;
+package com.ch.member.response;
 
 import lombok.Data;
 

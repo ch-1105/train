@@ -4,7 +4,7 @@ import com.ch.member.domain.Member;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ch.member.request.MemberLoginRequest;
 import com.ch.member.request.MemberRequest;
-import com.ch.member.responce.MemberLoginResponce;
+import com.ch.member.response.MemberLoginResponce;
 
 /**
 * @author ch051

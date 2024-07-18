@@ -5,7 +5,7 @@ import com.ch.train.common.response.PageResponse;
 import com.ch.train.common.result.Result;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
-import com.ch.member.responce.PassengerQueryResponse;
+import com.ch.member.response.PassengerQueryResponse;
 import com.ch.member.service.PassengerService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;

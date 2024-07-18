@@ -13,7 +13,7 @@ import com.ch.member.domain.Passenger;
 import com.ch.member.mapper.PassengerMapper;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
-import com.ch.member.responce.PassengerQueryResponse;
+import com.ch.member.response.PassengerQueryResponse;
 import com.ch.member.service.PassengerService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

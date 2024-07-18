@@ -6,7 +6,7 @@ import com.ch.train.common.response.PageResponse;
 import com.ch.member.domain.Passenger;
 import com.ch.member.request.PassengerQueryRequest;
 import com.ch.member.request.PassengerSaveRequest;
-import com.ch.member.responce.PassengerQueryResponse;
+import com.ch.member.response.PassengerQueryResponse;
 
 import java.util.List;
 

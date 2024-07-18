@@ -1,4 +1,4 @@
-package com.ch.member.responce;
+package com.ch.member.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
