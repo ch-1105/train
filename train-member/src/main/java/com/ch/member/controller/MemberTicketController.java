@@ -23,6 +23,4 @@ public class MemberTicketController {
         PageResponse<TicketQueryResponse> list = ticketService.queryMemberList(request);
         return Result.success(list);
     }
-
-
 }
