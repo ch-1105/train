@@ -30,15 +30,24 @@ export default defineComponent({
     const trains = ref([]);
     // 查询所有车次
     const selectTrain = () => {
-      axios.get("/business/admin/train/query-all-train").then((response) => {
-        let data = response.data;
-        if (data.code === 200) {
-          console.log(data.data)
-          trains.value = data.data;
-        } else {
-          notification.error({description: data.message});
-        }
-      });
+      let trains_cache = SessionStorage.get(SESSION_TRAINS);
+      if (Tool.isNotEmpty(trains_cache)) {
+        console.log("从缓存中获取车次数据");
+        trains.value = trains_cache;
+      } else {
+        axios.get("/business/admin/train/query-all-train").then((response) => {
+          let data = response.data;
+          if (data.code === 200) {
+            console.log(data.data)
+            trains.value = data.data;
+            SessionStorage.set(SESSION_TRAINS, trains.value);
+            console.log("从接口获取车次数据");
+          } else {
+            notification.error({description: data.message});
+          }
+        });
+      }
+
     };
     //车次下拉框筛选
     const filterTrain = (input, option) => {
