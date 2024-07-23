@@ -17,6 +17,26 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- 添加或更新dependencyManagement部分 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 声明并排除不需要的依赖 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <scope>import</scope> <!-- 如果是导入BOM的情况 -->
+                <exclusions>
+                    <!-- 这里列出需要排除的传递性依赖，如果有的话 -->
+                    <exclusion>
+                        <groupId>groupId.of.dependency.to.exclude</groupId>
+                        <artifactId>artifactId.of.dependency.to.exclude</artifactId>
+                    </exclusion>
+                    <!-- 添加更多需要排除的依赖 -->
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -33,6 +53,22 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
+        </dependency>
+
+        <!-- bootstrap cloud -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+        <!--注册中心-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!--负载均衡-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-loadbalancer</artifactId>
         </dependency>
     </dependencies>
 
