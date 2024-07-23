@@ -13,12 +13,13 @@ import java.util.Date;
  * create: 2024--1214:17
  * Description:
  */
-@FeignClient(name = "business", url = "http://localhost:8082/business")
+@FeignClient(name = "business")
+//@FeignClient(name = "business", url = "http://localhost:8082/business")
 public interface BusinessFeign {
 
-    @GetMapping("/admin/station/query-all-station")
+    @GetMapping("/business/admin/station/query-all-station")
     Object list();
 
-    @GetMapping ("/admin/daily-train/gen-daily/{date}")
+    @GetMapping ("/business/admin/daily-train/gen-daily/{date}")
     Result<Object> generateDailyTrain(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date);
 }
