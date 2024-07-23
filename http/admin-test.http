@@ -68,3 +68,11 @@ token: {{token}}
   "idCard": "4444",
   "type": 2
 }
+
+###
+GET http://localhost:8082/business/test/redis/set/ch/1234
+Accept: application/json
+
+###
+GET http://localhost:8082/business/test/redis/get/ch
+Accept: application/json

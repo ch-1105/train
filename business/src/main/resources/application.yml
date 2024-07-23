@@ -16,6 +16,13 @@ spring:
       map-underscore-to-camel-case: true # 可选项，开启下划线转驼峰命名规则
     #    type-aliases-package: com.example.yourpackage.entity # 实体类所在的包路径
     mapper-locations: classpath*:mapper/**/*.xml
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      key-prefix: train_cache_ # 缓存key前缀
+      cache-null-values: false # 不缓存null值
+      time-to-live: 10s # 过期时间
 
 mybatis-plus:
   configuration:
