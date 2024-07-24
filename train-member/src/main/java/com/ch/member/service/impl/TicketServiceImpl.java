@@ -17,6 +17,7 @@ import com.ch.train.common.response.PageResponse;
 import com.ch.train.common.utils.GlobalException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.seata.core.context.RootContext;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +35,15 @@ public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket> impleme
 
     @Override
     public void save(MemberTicketRequest request) {
+        log.info("seata全局事务id : {}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(request, Ticket.class);
         ticket.setId(IdUtil.getSnowflakeNextId());
         ticket.setCreateTime(now);
         ticket.setUpdateTime(now);
         ticketMapper.insert(ticket);
+        // 模拟异常
+//        throw new RuntimeException("模拟异常");
     }
     @Override
     public PageResponse<TicketQueryResponse> queryList(TicketQueryRequest request) {
