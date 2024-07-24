@@ -42,6 +42,12 @@ public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket> impleme
         ticket.setCreateTime(now);
         ticket.setUpdateTime(now);
         ticketMapper.insert(ticket);
+        // 模拟超时可以在数据库中查看 branch语句
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         // 模拟异常
 //        throw new RuntimeException("模拟异常");
     }

@@ -15,12 +15,36 @@ spring:
         namespace: train
 # 配置seata
 seata:
+  #配置中心
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:8848
+      namespace: train
+      group: SEATA_GROUP
+      username: nacos
+      password: nacos
+      context-path:
+      data-id: seataServer.properties
+    #注册中心
+    registry:
+      type: nacos
+      nacos:
+        application: seata-server
+        server-addr: 127.0.0.1:8848
+        group: SEATA_GROUP
+        namespace: train
+        cluster: standalone
+        username: nacos
+        password: nacos
+        context-path:
+
   # seata 事务组名称
   tx-service-group: business-tx-group
-  service:
-    # 组和集群关连
-    vgroup-mapping:
-      business-tx-group: default
-    # 服务机器列表
-    grouplist:
-      default: 127.0.0.1:8091
+#  service: 现在使用nacos配置中心，所以这里不需要配置
+#    # 组和集群关连
+#    vgroup-mapping:
+#      business-tx-group: default
+#    # 服务机器列表
+#    grouplist:
+#      default: 127.0.0.1:8091
