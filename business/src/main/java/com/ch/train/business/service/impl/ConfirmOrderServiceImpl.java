@@ -58,7 +58,7 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
     @Resource
     private AfterConfirmOrderService afterConfirmOrderService;
     @Resource
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void save(ConfirmOrderSaveRequest request) {
@@ -66,17 +66,16 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
     }
 
     private boolean orderTicket(ConfirmOrderSaveRequest request) {
-        String redisKey = request.getTrainCode() + request.getDate();
-        Boolean redisSetIfAbsent = redisTemplate.opsForValue().setIfAbsent(redisKey, redisKey , 5 , TimeUnit.SECONDS);
+        String lockKey = request.getTrainCode() + request.getDate();
+        Boolean setIfAbsent = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockKey , 5 , TimeUnit.SECONDS);
 
-        if (Boolean.TRUE.equals(redisSetIfAbsent)) {
-            log.info("redis锁 获取成功 , {}", redisKey);
+        if (Boolean.TRUE.equals(setIfAbsent)) {
+            log.info("redis锁 获取成功 , {}", lockKey);
         }else {
-            log.info("redis锁 获取失败 , {}", redisKey);
+            log.info("redis锁 获取失败 , {}", lockKey);
             throw new GlobalException("当前购票人数过多，请稍后再试");
         }
         // 业务校验 判断票数>0 车票、车次、座位存在，且车票、车次、座位状态为可用 乘车人是否购买过同一张票等
-
         DateTime now = DateTime.now();
         Date date = request.getDate();
         String trainCode = request.getTrainCode();
@@ -167,7 +166,8 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
             log.error("订单处理异常", e);
             throw new GlobalException("订单处理异常");
         }
-        return true;
+    stringRedisTemplate.delete(lockKey);
+    return true;
     }
 
     private static void reduceTicket(SeatTypeEnum seatTypeEnum, DailyTrainTicket dailyTrainTicket) {
