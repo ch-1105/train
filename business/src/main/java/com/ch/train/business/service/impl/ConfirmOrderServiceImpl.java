@@ -34,11 +34,13 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, ConfirmOrder> implements ConfirmOrderService {
@@ -53,9 +55,10 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
     private DailyTrainCarriageService dailyTrainCarriageService;
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
-
     @Resource
     private AfterConfirmOrderService afterConfirmOrderService;
+    @Resource
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public void save(ConfirmOrderSaveRequest request) {
@@ -63,6 +66,15 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
     }
 
     private boolean orderTicket(ConfirmOrderSaveRequest request) {
+        String redisKey = request.getTrainCode() + request.getDate();
+        Boolean redisSetIfAbsent = redisTemplate.opsForValue().setIfAbsent(redisKey, redisKey , 5 , TimeUnit.SECONDS);
+
+        if (Boolean.TRUE.equals(redisSetIfAbsent)) {
+            log.info("redis锁 获取成功 , {}", redisKey);
+        }else {
+            log.info("redis锁 获取失败 , {}", redisKey);
+            throw new GlobalException("当前购票人数过多，请稍后再试");
+        }
         // 业务校验 判断票数>0 车票、车次、座位存在，且车票、车次、座位状态为可用 乘车人是否购买过同一张票等
 
         DateTime now = DateTime.now();
