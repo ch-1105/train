@@ -7,6 +7,8 @@ import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -69,7 +71,8 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         orderTicket(request);
     }
 
-    private boolean orderTicket(ConfirmOrderSaveRequest request) {
+    @SentinelResource(value="save" , blockHandler="orderTicketBlockHandler")
+    public boolean orderTicket(ConfirmOrderSaveRequest request) {
         String lockKey = request.getTrainCode() + request.getDate();
 //        Boolean setIfAbsent = stringRedisTemplate.opsForValue().setIfAbsent(lockKey, lockKey , 5 , TimeUnit.SECONDS);
 //
@@ -193,14 +196,19 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
         } catch (NumberFormatException | InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            log.info("投票结束 , 释放锁 , {} " , lockKey);
             // 解锁 只有当前线程才能解锁
             if(null != rLock  && rLock.isHeldByCurrentThread()) {
+                log.info("投票结束 , 释放锁 , {} " , lockKey);
                 rLock.unlock();
             }
         }
 //        stringRedisTemplate.delete(lockKey);
     return true;
+    }
+
+    public boolean orderTicketBlockHandler(ConfirmOrderSaveRequest request, BlockException e) {
+        log.info("当前请求被限流 , {} " , request);
+        throw new GlobalException("当前购票人数过多,请求被限流，请稍后再试");
     }
 
     private static void reduceTicket(SeatTypeEnum seatTypeEnum, DailyTrainTicket dailyTrainTicket) {

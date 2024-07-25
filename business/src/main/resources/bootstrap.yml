@@ -14,9 +14,12 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: train
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:6650
 # 配置seata
 seata:
-
   #配置中心
   config:
     type: nacos
