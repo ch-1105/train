@@ -269,8 +269,7 @@ public class ConfirmOrderServiceImpl extends ServiceImpl<ConfirmOrderMapper, Con
                     tempChooseList.add(seat);
                 }else {
                     log.info("座位不可售：{}", seat);
-                    chooseAllSeat = false;
-                    break;
+                    continue;
                 }
                 // 根据相对偏移值进行选座
                 if (CollUtil.isNotEmpty(offSetList)) {
