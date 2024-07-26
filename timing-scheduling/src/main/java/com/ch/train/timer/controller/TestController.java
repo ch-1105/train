@@ -1,5 +1,6 @@
 package com.ch.train.timer.controller;
 
+import com.ch.train.common.result.Result;
 import com.ch.train.timer.feign.BusinessFeign;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ public class TestController {
     }
 
     @RequestMapping("/hello")
-    public void hello(){
-        System.out.println(businessFeign.list());
+    public Result<Object> hello(){
+        return Result.success(businessFeign.list());
     }
 }
