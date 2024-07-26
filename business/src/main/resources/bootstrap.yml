@@ -18,6 +18,14 @@ spring:
       transport:
         port: 8719
         dashboard: localhost:6650
+      datasource:
+        nacos:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            dataId: sentinel
+            groupId: TRAIN_GROUP
+            rule-type: flow
+            namespace: train
 # 配置seata
 seata:
   #配置中心
