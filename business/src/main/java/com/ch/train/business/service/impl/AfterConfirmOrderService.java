@@ -14,12 +14,11 @@ import com.ch.train.business.request.ConfirmOrderTicketRequest;
 import com.ch.train.business.service.ConfirmOrderService;
 import com.ch.train.business.service.DailyTrainTicketService;
 import com.ch.train.common.request.MemberTicketRequest;
-import io.seata.core.context.RootContext;
-import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,14 +42,14 @@ public class AfterConfirmOrderService{
         // 座位表更新数量
         // 余票表更新状态
         // 订单表更新状态
-//    @Transactional
-    @GlobalTransactional // 分布式事务
+    @Transactional
+//    @GlobalTransactional // 分布式事务
     public void doConfirmOrder(DailyTrainTicket ticket,
                                List<DailyTrainSeat> systemChooseedList,
                                List<ConfirmOrderTicketRequest> tickets,
                                ConfirmOrder confirmOrder
     ) {
-        log.info("seata全局事务id : {}",RootContext.getXID());
+//        log.info("seata全局事务id : {}",RootContext.getXID());
         int j = 0 ;
         DateTime now = DateTime.now();
         for (DailyTrainSeat dailyTrainSeat : systemChooseedList) {
