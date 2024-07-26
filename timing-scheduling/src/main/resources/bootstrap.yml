@@ -14,6 +14,21 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: train
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:6650
+      datasource:
+        degrade:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            dataId: ${spring.application.name}-sentinel-degrade
+            groupId: TRAIN_GROUP
+            rule-type: degrade
+            namespace: train
+    openfeign:
+      lazy-attributes-resolution: true
+
 # 配置seata
 seata:
 
@@ -50,3 +65,7 @@ seata:
 #    # 服务机器列表
 #    grouplist:
 #      default: 127.0.0.1:8091
+feign:
+  sentinel:
+    # 开启后要设置上面那个为true lazy-attributes-resolution 不然可能会启动失败 注入不了类
+    enabled: true
